@@ -102,6 +102,7 @@ final class CircleMetricView: CleanView {
         titleLabel.font = .boldSystemFont(ofSize: 28)
         titleLabel.textAlignment = .center
         titleLabel.adjustsFontSizeToFitWidth = true
+		titleLabel.textColor = ColorLibrary.white
 
         subtitleLabel.font = .systemFont(ofSize: 12)
         subtitleLabel.textAlignment = .center
@@ -112,14 +113,18 @@ final class CircleMetricView: CleanView {
 
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+//			stackView.leadingAnchor.constraint(equalTo: leftAnchor, constant: 6),
+//			stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 6),
+//			stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
+//			stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 6),
         ])
         updateContent()
     }
 
     private func setupLayers() {
         trackLayer.fillColor = UIColor.clear.cgColor
-        trackLayer.strokeColor = UIColor(white: 0.25, alpha: 1).cgColor
+		trackLayer.strokeColor = ColorLibrary.backgroundBlack.cgColor
         trackLayer.lineCap = .butt
         trackLayer.mask = trackMaskLayer
 
@@ -157,11 +162,11 @@ final class CircleMetricView: CleanView {
 
         trackLayer.frame = bounds
         trackLayer.path = circlePath.cgPath
-        trackLayer.lineWidth = frame.width / 10
+        trackLayer.lineWidth = frame.width / 15
 
         progressLayer.frame = bounds
         progressLayer.path = circlePath.cgPath
-        progressLayer.lineWidth = frame.width / 10
+        progressLayer.lineWidth = frame.width / 15
         progressLayer.strokeEnd = max(0, min(progress, 1))
 
         let maskStart = startAngle + progressLayer.strokeEnd * 2 * .pi
@@ -179,7 +184,7 @@ final class CircleMetricView: CleanView {
         trackMaskLayer.strokeColor = UIColor.white.cgColor
 
         applyStyle()
-        updateEndDot(center: center, radius: radius)
+//        updateEndDot(center: center, radius: radius)
     }
 
     private func updateFonts(for size: CGSize) {
@@ -195,26 +200,14 @@ final class CircleMetricView: CleanView {
         switch style {
         case .doted:
             trackLayer.lineDashPattern = [
-                NSNumber(value: Float(lineWidth * 0.1)),
-                NSNumber(value: Float(lineWidth * 0.4))
+                NSNumber(value: Float(lineWidth * 0.05)),
+                NSNumber(value: Float(lineWidth * 0.2))
             ]
 
         case .solid:
             trackLayer.lineDashPattern = nil
             trackLayer.isHidden = false
         }
-    }
-
-    private func updateEndDot(center: CGPoint, radius: CGFloat) {
-        guard style == .solid else { return }
-
-        let angle = -CGFloat.pi / 2 + progress * 2 * .pi
-        let point = CGPoint(
-            x: center.x + radius * cos(angle),
-            y: center.y + radius * sin(angle)
-        )
-
-        let dotRadius = lineWidth / 2
     }
 
     // MARK: - Content

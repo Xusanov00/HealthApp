@@ -43,21 +43,15 @@ class CalendarView: CleanView {
 }
 
 extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int
-    ) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         dateArray.count
     }
 
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: CalendarDayCollectionViewCell.string,
-            for: indexPath
-        ) as? CalendarDayCollectionViewCell else {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		guard let cell = collectionView.dequeueReusableCell(
+			withReuseIdentifier: CalendarDayCollectionViewCell.string,
+			for: indexPath
+		) as? CalendarDayCollectionViewCell else {
             return UICollectionViewCell()
         }
         cell.configureCell(data: dateArray[indexPath.row])

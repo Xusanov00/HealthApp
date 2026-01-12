@@ -24,7 +24,7 @@ class RecoveryTableViewCell: UITableViewCell {
     private var descriptionLabel = UILabel().configured { label in
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.numberOfLines = 2
-        label.textColor = .systemGray5
+		label.textColor = ColorLibrary.gray5
         label.text = "Готовность вашего\nорганизма к нагрузкам"
     }
     
@@ -59,7 +59,7 @@ class RecoveryTableViewCell: UITableViewCell {
             ),
             backView.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor,
-                constant: -4
+                constant: -8
             ),
         ])
     }

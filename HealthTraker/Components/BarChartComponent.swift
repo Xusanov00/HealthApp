@@ -10,13 +10,13 @@ import SwiftUI
 
 struct BarChartComponent: View {
 
-    var content: [HealthInfoDM]
+    @State var content: [HealthInfoDM]
     let labelFormatter: (Date) -> String
 
     var barType: BarType = .mono
     var barColor: Color = .teal
     var isBarTextHidden: Bool = true
-    var backgroundColor: Color = .black
+    var backgroundColor: Color = .clear
     var yRange: ClosedRange<Double> = 0...120
 
     private var barWidth: CGFloat {
@@ -31,7 +31,6 @@ struct BarChartComponent: View {
         Chart {
             bars
         }
-        .frame(height: 220)
         .chartXScale(domain: xDomain)
         .chartPlotStyle { plotArea in
             plotArea.padding(.horizontal, barWidth / 2)
@@ -39,11 +38,7 @@ struct BarChartComponent: View {
         .chartYScale(domain: yRange)
         .chartXAxis { xAxis }
         .chartYAxis { yAxis }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 28)
-                .fill(backgroundColor)
-        )
+		.background(ColorLibrary.gray1.color)
     }
 }
 
@@ -81,7 +76,7 @@ private extension BarChartComponent {
                 if let index = value.as(Int.self),
                    index < content.count {
                     Text(labelFormatter(content[index].date))
-                        .foregroundColor(.gray)
+						.foregroundColor(ColorLibrary.gray3.color)
                 }
             }
         }
@@ -90,11 +85,11 @@ private extension BarChartComponent {
     var yAxis: some AxisContent {
         AxisMarks(position: .trailing) { value in
             AxisGridLine()
-                .foregroundStyle(.gray.opacity(0.3))
+				.foregroundStyle(ColorLibrary.gray3.color)
             AxisValueLabel {
                 if let v = value.as(Double.self) {
                     Text("\(Int(v))%")
-                        .foregroundColor(.gray)
+						.foregroundColor(ColorLibrary.gray3.color)
                         .font(.caption)
                 }
             }

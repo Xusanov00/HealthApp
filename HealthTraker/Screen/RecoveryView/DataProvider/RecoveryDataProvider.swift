@@ -115,6 +115,7 @@ extension RecoveryDataProvider {
                 withIdentifier: LineChartTableViewCell.string,
                 for: indexPath
             ) as? LineChartTableViewCell else { return UITableViewCell() }
+			cell.
             return cell
         case 6:
             guard let cell = tableView.dequeueReusableCell(

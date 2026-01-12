@@ -12,17 +12,23 @@ class RecoveryRootView: CleanView {
     // MARK: - Subviews
     weak var tableView: UITableView!
 
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let hostageviewcontroller = UIHostingController(rootView: InstructionView())
-        addSubview(hostageviewcontroller.view)
+//		let hoster = UIHostingController(rootView: GlassButtonView())
+//		addSubview(hoster.view)
+//		hoster.view.translatesAutoresizingMaskIntoConstraints = false
+//		NSLayoutConstraint.activate([
+//			hoster.view.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+//			hoster.view.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+//			hoster.view.heightAnchor.constraint(equalToConstant: 30),
+//			hoster.view.widthAnchor.constraint(equalToConstant: 150),
+//		])
         setupTableView()
     }
     
     private func setupTableView() {
         let tableView = UITableView()
-        tableView.backgroundColor = .gray
+		tableView.backgroundColor = ColorLibrary.backgroundBlack
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -36,33 +42,38 @@ class RecoveryRootView: CleanView {
     }
 }
 
-struct InstructionView: View {
-    @State private var showCameraSettingsAlert = false
+struct GlassButtonView: View {
+	var body: some View {
+		ZStack {
+			Color.blue.ignoresSafeArea()
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-        }
-        .alert(isPresented: $showCameraSettingsAlert) {
-            cameraGoSettingsAlert
-        }
-        .onAppear {
-            showCameraSettingsAlert = true
-        }
-    }
-    
-    private var cameraGoSettingsAlert: Alert {
-        Alert(
-            title: Text("Settings.title"),
-            message: Text("Settings.subtitle"),
-            primaryButton: .default(
-                Text("settings"),
-                action: {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
-                }
-            ),
-            secondaryButton: .cancel(),
-        )
-    }
+			VStack(spacing: 20) {
+
+				if #available(iOS 26.0, *) {
+					Button("Action") { }
+						.buttonStyle(.glass)
+						.tint(.red)
+				} else {
+					Button("Action") { }
+						.buttonStyle(.borderedProminent)
+				}
+
+				if #available(iOS 26.0, *) {
+					Button("Prominent") { }
+						.buttonStyle(.glassProminent)
+						.tint(.red)
+				}
+
+				Button(action: {}) {
+					Image(systemName: "chevron.forward")
+						.font(.title2.bold())
+						.padding(12)
+						.background(.ultraThinMaterial, in: Circle())
+				}
+				.shadow(radius: 4)
+
+			}
+			.padding()
+		}
+	}
 }

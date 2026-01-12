@@ -44,7 +44,7 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
 
         weekdayLabel.font = .systemFont(ofSize: 12)
         weekdayLabel.textAlignment = .center
-        weekdayLabel.textColor = .black
+        weekdayLabel.textColor = .white
 
         NSLayoutConstraint.activate([
             weekdayLabel.topAnchor.constraint(equalTo: dateCircle.bottomAnchor, constant: 4),
