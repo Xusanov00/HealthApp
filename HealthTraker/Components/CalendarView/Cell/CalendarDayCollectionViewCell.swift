@@ -15,15 +15,32 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
     private var formatter = DateFormatter().configured { formatter in
         formatter.locale = Locale(identifier: "ru_RU")
     }
+    private let glassView = UIVisualEffectView().configured { glassView in
+        glassView.effect = UIBlurEffect(style: .systemMaterial)
+    }
+    private var glassButton = UIButton().configured { button in
+        if #available(iOS 26.0, *) {
+            button.configuration = .glass()
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.layer.cornerRadius = contentView.frame.width / 2
+        contentView.clipsToBounds = true
+        setupLiquidGlassBackground()
         setupDateCircle()
         setupWeekdayLabel()
     }
 
     required init?(coder: NSCoder) {
         fatalError()
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            updateSelection(animated: true)
+        }
     }
 
     private func setupDateCircle() {
@@ -50,7 +67,7 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
             weekdayLabel.topAnchor.constraint(equalTo: dateCircle.bottomAnchor, constant: 4),
             weekdayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
             weekdayLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
-            weekdayLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -2)
+            weekdayLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -4)
         ])
     }
 
@@ -62,5 +79,59 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
 
         formatter.dateFormat = "EE"
         weekdayLabel.text = formatter.string(from: data.date)
+    }
+}
+
+// MARK: - Liquid glass background
+extension CalendarDayCollectionViewCell {
+    private func setupLiquidGlassBackground() {
+        if #available(iOS 26.0, *) {
+            glassButton.alpha = 0
+            glassButton.isUserInteractionEnabled = false
+            glassButton.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(glassButton)
+            
+            NSLayoutConstraint.activate([
+                glassButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+                glassButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                glassButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                glassButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            ])
+        } else {
+            glassView.alpha = 0
+            glassView.isUserInteractionEnabled = false
+            glassView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(glassView)
+            
+            NSLayoutConstraint.activate([
+                glassView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                glassView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                glassView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                glassView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            ])
+        }
+    }
+
+    private func updateSelection(animated: Bool) {
+        let changes = {
+            if #available(iOS 26.0, *) {
+                self.glassButton.alpha = self.isSelected ? 1 : 0
+            } else {
+                self.glassView.alpha = self.isSelected ? 0.7 : 0
+            }
+        }
+
+        animated
+        ? UIView.animate(withDuration: 0.15, animations: changes)
+        : changes()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        if #available(iOS 26.0, *) {
+            glassButton.alpha = 0
+        }else {
+            glassView.alpha = 0
+        }
     }
 }

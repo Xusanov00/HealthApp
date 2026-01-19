@@ -10,8 +10,9 @@ import UIKit
 class RecoveryTableViewCell: UITableViewCell {
     private var backView = UIView().configured { view in
         view.layer.cornerRadius = 22
-        view.backgroundColor = .systemIndigo
+        view.clipsToBounds = true
     }
+    private var gradientLayer = CAGradientLayer()
     private var recoveryCircleView = CircleMetricView().configured { view in
         view.style = .doted
         view.icon = UIImage(named: "personBall_ic")
@@ -40,6 +41,27 @@ class RecoveryTableViewCell: UITableViewCell {
         super.init(coder: coder)
         fatalError()
     }
+
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//
+//        backView.layoutIfNeeded()
+//        gradientLayer.frame = backView.bounds
+//
+//        if gradientLayer.superlayer == nil {
+//            gradientLayer.colors = [
+//                ColorLibrary.gradientLeft.cgColor,
+//                ColorLibrary.gradientRight.cgColor
+//            ]
+////            gradientLayer.locations = [0.0, 0.9]
+//            gradientLayer.startPoint = CGPoint(x: 0.1, y: 1)
+//            gradientLayer.endPoint = CGPoint(x: 1, y: 0.1)
+//            gradientLayer.cornerRadius = 22
+//
+//            backView.layer.insertSublayer(gradientLayer, at: 0)
+//            backView.layer.masksToBounds = true
+//        }
+//    }
     
     private func setupBackView() {
         contentView.addSubview(backView)
@@ -50,16 +72,14 @@ class RecoveryTableViewCell: UITableViewCell {
                 constant: 4
             ),
             backView.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor,
-                constant: 8
+                equalTo: contentView.leadingAnchor
             ),
             backView.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
                 constant: -4
             ),
             backView.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor,
-                constant: -8
+                equalTo: contentView.trailingAnchor
             ),
         ])
     }
@@ -118,10 +138,10 @@ class RecoveryTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureCell(data: HealthInfoDM) {
+    func configureCell(data: HealthInfoDM?) {
+        guard let data else { return }
         recoveryCircleView.progress = data.value/100
-        percentLabel.text = "\(data.value)%"
+        percentLabel.text = "\(Int(data.value))%"
         recoveryCircleView.color = UIColor.calculated(for: data.value)
-        recoveryCircleView.progress = 0.32
     }
 }

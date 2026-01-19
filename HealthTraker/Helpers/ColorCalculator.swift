@@ -24,9 +24,9 @@ public struct DefaultColorCalculator: ColorCalculator {
 
     public func color(for value: CGFloat) -> CalculatedColor {
         switch value {
-        case ..<30:
+        case ..<40:
             return .red
-        case 30..<60:
+        case 30..<70:
             return .yellow
         default:
             return .green

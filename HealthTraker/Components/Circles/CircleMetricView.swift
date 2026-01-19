@@ -8,18 +8,19 @@
 import UIKit
 
 final class CircleMetricView: CleanView {
-
     // MARK: - Types
-
     enum Style {
         case solid
         case doted
     }
 
     // MARK: - Public API
-
     var progress: CGFloat = 0 {
-        didSet { setNeedsLayout() }
+        didSet {
+            let clamped = max(0, min(progress, 1))
+            progressLayer.strokeEnd = clamped
+            updateMask()
+        }
     }
 
     var color: UIColor = .systemTeal {
@@ -59,24 +60,23 @@ final class CircleMetricView: CleanView {
     }
 
     // MARK: - Layers
-
     private let trackLayer = CAShapeLayer()
     private let progressLayer = CAShapeLayer()
     private let trackMaskLayer = CAShapeLayer()
 
     // MARK: - UI
-
     private let stackView = UIStackView()
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
 
     // MARK: - Constants
-
     private let lineWidth: CGFloat = 10
+    private var circleCenter: CGPoint = .zero
+    private var circleRadius: CGFloat = 0
+    private let startAngle = -CGFloat.pi / 2
 
     // MARK: - Init
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -88,7 +88,6 @@ final class CircleMetricView: CleanView {
     }
 
     // MARK: - Setup UI
-
     private func setupUI() {
         backgroundColor = .clear
 
@@ -114,19 +113,15 @@ final class CircleMetricView: CleanView {
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-//			stackView.leadingAnchor.constraint(equalTo: leftAnchor, constant: 6),
-//			stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 6),
-//			stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
-//			stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 6),
         ])
         updateContent()
     }
 
     private func setupLayers() {
         trackLayer.fillColor = UIColor.clear.cgColor
-		trackLayer.strokeColor = ColorLibrary.backgroundBlack.cgColor
+		trackLayer.strokeColor = ColorLibrary.gray3.cgColor
         trackLayer.lineCap = .butt
-        trackLayer.mask = trackMaskLayer
+        trackLayer.mask = nil
 
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
@@ -137,7 +132,6 @@ final class CircleMetricView: CleanView {
     }
 
     // MARK: - Layout
-
     override func layoutSubviews() {
         super.layoutSubviews()
         setupLayouts()
@@ -146,15 +140,14 @@ final class CircleMetricView: CleanView {
     
     private func setupLayouts() {
         let bounds = self.bounds
-        let center = CGPoint(x: bounds.midX, y: bounds.midY)
-        let radius = min(bounds.width, bounds.height) / 2 - lineWidth / 2
+        circleCenter = CGPoint(x: bounds.midX, y: bounds.midY)
+        circleRadius = min(bounds.width, bounds.height) / 2 - lineWidth / 2
 
-        let startAngle = -CGFloat.pi / 2
         let endAngle = startAngle + 2 * .pi
 
         let circlePath = UIBezierPath(
-            arcCenter: center,
-            radius: radius,
+            arcCenter: circleCenter,
+            radius: circleRadius,
             startAngle: startAngle,
             endAngle: endAngle,
             clockwise: true
@@ -167,12 +160,18 @@ final class CircleMetricView: CleanView {
         progressLayer.frame = bounds
         progressLayer.path = circlePath.cgPath
         progressLayer.lineWidth = frame.width / 15
-        progressLayer.strokeEnd = max(0, min(progress, 1))
 
+        updateMask()
+        applyStyle()
+    }
+
+    private func updateMask() {
+        let endAngle = startAngle + 2 * .pi
         let maskStart = startAngle + progressLayer.strokeEnd * 2 * .pi
+
         let maskPath = UIBezierPath(
-            arcCenter: center,
-            radius: radius,
+            arcCenter: circleCenter,
+            radius: circleRadius,
             startAngle: maskStart,
             endAngle: endAngle,
             clockwise: true
@@ -182,20 +181,21 @@ final class CircleMetricView: CleanView {
         trackMaskLayer.path = maskPath.cgPath
         trackMaskLayer.lineWidth = lineWidth
         trackMaskLayer.strokeColor = UIColor.white.cgColor
-
-        applyStyle()
-//        updateEndDot(center: center, radius: radius)
     }
-
+    
     private func updateFonts(for size: CGSize) {
         let base = min(size.width, size.height)
 
         titleLabel.font = .boldSystemFont(ofSize: base * 0.35)
         subtitleLabel.font = .systemFont(ofSize: base * 0.14)
     }
+    
+    private func updateProgress() {
+        let clamped = max(0, min(progress, 1))
+        progressLayer.strokeEnd = clamped
+    }
 
     // MARK: - Style
-
     private func applyStyle() {
         switch style {
         case .doted:
@@ -211,7 +211,6 @@ final class CircleMetricView: CleanView {
     }
 
     // MARK: - Content
-
     private func updateContent() {
         stackView.arrangedSubviews.forEach {
             stackView.removeArrangedSubview($0)
@@ -228,7 +227,6 @@ final class CircleMetricView: CleanView {
     }
 
     // MARK: - Size
-
     override var intrinsicContentSize: CGSize {
         CGSize(width: 120, height: 120)
     }

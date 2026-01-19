@@ -30,11 +30,31 @@ class RecoveryVC: UIViewController, RootViewProviding {
 
 extension RecoveryVC {
     private func appearanceSettings() {
-        self.dataProvider.recoveryData = viewModel.recoveryData
-        self.dataProvider.pulseData = viewModel.pulseData
-        self.dataProvider.vsrData = viewModel.vsrData
-        self.dataProvider.breathData = viewModel.breathData
-        self.dataProvider.sleepData = viewModel.sleepData
+        dataProvider.delegate = self
+        dataProvider.recoveryData = viewModel.recoveryData
+        dataProvider.pulseData = viewModel.pulseData
+        dataProvider.vsrData = viewModel.vsrData
+        dataProvider.breathData = viewModel.breathData
+        dataProvider.sleepData = viewModel.sleepData
+        dataProvider.recoverySelectedData = viewModel.recoverySelectedData
+        dataProvider.selectedRange = viewModel.selectedRange
     }
 }
 
+// MARK: - RecoveryDataProviderDelegate
+extension RecoveryVC: RecoveryDataProviderDelegate {
+    func dateChanged(date: Date) {
+        viewModel.dateChanged(date: date)
+        dataProvider.recoverySelectedData = viewModel.recoverySelectedData
+    }
+    
+    func rangeChanged(range: ChartRange) {
+        viewModel.rangeChanged(range: range)
+        dataProvider.recoveryData = viewModel.recoveryData
+        dataProvider.pulseData = viewModel.pulseData
+        dataProvider.vsrData = viewModel.vsrData
+        dataProvider.breathData = viewModel.breathData
+        dataProvider.sleepData = viewModel.sleepData
+        dataProvider.selectedRange = viewModel.selectedRange
+    }
+}

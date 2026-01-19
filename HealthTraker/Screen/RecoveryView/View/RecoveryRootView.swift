@@ -14,21 +14,13 @@ class RecoveryRootView: CleanView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-//		let hoster = UIHostingController(rootView: GlassButtonView())
-//		addSubview(hoster.view)
-//		hoster.view.translatesAutoresizingMaskIntoConstraints = false
-//		NSLayoutConstraint.activate([
-//			hoster.view.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-//			hoster.view.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-//			hoster.view.heightAnchor.constraint(equalToConstant: 30),
-//			hoster.view.widthAnchor.constraint(equalToConstant: 150),
-//		])
         setupTableView()
     }
     
     private func setupTableView() {
         let tableView = UITableView()
 		tableView.backgroundColor = ColorLibrary.backgroundBlack
+        tableView.showsVerticalScrollIndicator = false
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

@@ -11,10 +11,14 @@ struct HealthInfoDM: Identifiable {
     let id = UUID()
     let date: Date
     let value: Double
+    let label: String
 }
 
-struct LineSegment: Identifiable {
-    let id = UUID()
-    let start: HealthInfoDM
-    let end: HealthInfoDM
+struct ChartAnimatedDM: Identifiable, Equatable {
+    let id: UUID
+    let date: Date
+    let label: String
+    let value: Double
+
+    var animatedValue: Double = 0
 }

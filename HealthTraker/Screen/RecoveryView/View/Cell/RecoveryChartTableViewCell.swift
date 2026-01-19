@@ -12,10 +12,9 @@ final class RecoveryChartTableViewCell: UITableViewCell {
 
     // MARK: - Callback
     var onRangeChanged: ((ChartRange) -> Void)?
-	@Published private var recoveryData: [HealthInfoDM] = []
+    private let chartViewModel = BarChartViewModel()
 
     // MARK: - UI
-
 	private let backView = UIView().configured { view in
 		view.backgroundColor = ColorLibrary.gray1
 		view.layer.cornerRadius = 22
@@ -29,9 +28,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     }
 
 	private lazy var hostingBarChart = UIHostingController(
-		rootView: BarChartComponent(content: recoveryData) {
-			$0.formatted(.dateTime.weekday(.abbreviated))
-		}
+		rootView: BarChartComponent(viewModel: chartViewModel)
 	)
 
     private let dayButton = UIButton(type: .system)
@@ -49,7 +46,6 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     }
 
     // MARK: - Bottom metrics
-
     private let metricsStack = UIStackView().configured {
         $0.axis = .vertical
         $0.spacing = 12
@@ -61,13 +57,11 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     private let sleepView = RecoveryMetricView()
 
     // MARK: - State
-
-    private var selectedRange: ChartRange = .day {
+    private var selectedRange: ChartRange? {
         didSet { updateButtonsUI() }
     }
 
     // MARK: - Init
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 		backgroundColor = .clear
@@ -85,7 +79,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     // MARK: - Setup UI
 
     private func setupUI() {
-		hostingBarChart.view.backgroundColor = .clear
+        hostingBarChart.view.backgroundColor = .clear
 		hostingBarChart.view.clipsToBounds = true
 		
 		backView.translatesAutoresizingMaskIntoConstraints = false
@@ -113,8 +107,8 @@ final class RecoveryChartTableViewCell: UITableViewCell {
 
         NSLayoutConstraint.activate([
 			backView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-			backView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-			backView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+			backView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+			backView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
 			backView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
 			
             titleLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 16),
@@ -125,10 +119,10 @@ final class RecoveryChartTableViewCell: UITableViewCell {
             buttonsStack.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -8),
             buttonsStack.heightAnchor.constraint(equalToConstant: 40),
 
-			hostingBarChart.view.topAnchor.constraint(equalTo: buttonsStack.bottomAnchor, constant: 12),
-			hostingBarChart.view.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 16),
-			hostingBarChart.view.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
-			hostingBarChart.view.heightAnchor.constraint(equalToConstant: 160),
+			hostingBarChart.view.topAnchor.constraint(equalTo: buttonsStack.bottomAnchor, constant: 22),
+            hostingBarChart.view.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
+            hostingBarChart.view.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
+            hostingBarChart.view.heightAnchor.constraint(equalToConstant: 200),
 
 			metricsStack.topAnchor.constraint(equalTo: hostingBarChart.view.bottomAnchor, constant: 16),
             metricsStack.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 16),
@@ -172,20 +166,23 @@ final class RecoveryChartTableViewCell: UITableViewCell {
         case .day: dayButton.backgroundColor = .black
         case .week: weekButton.backgroundColor = .black
         case .month: monthButton.backgroundColor = .black
+        case .none: break
         }
     }
 
     // MARK: - External config
-
-    func configureChart(data: [HealthInfoDM]) {
-		recoveryData = data
+    func configureChart(range: ChartRange?, yValues: [Double], data: [HealthInfoDM]) {
+        selectedRange = range ?? .day
+        chartViewModel.data = data
+        chartViewModel.yValues = yValues
+        chartViewModel.barType = .colorful
     }
 
     func configureMetrics(_ metrics: [RecoveryMetric]) {
-        hrvView.configure(metrics[0])
-        pulseView.configure(metrics[1])
-        breathView.configure(metrics[2])
-        sleepView.configure(metrics[3])
+        hrvView.configureView(metrics[0])
+        pulseView.configureView(metrics[1])
+        breathView.configureView(metrics[2])
+        sleepView.configureView(metrics[3])
     }
 }
 
@@ -244,7 +241,7 @@ final class RecoveryMetricView: UIView {
         ])
     }
 
-    func configure(_ model: RecoveryMetric) {
+    func configureView(_ model: RecoveryMetric) {
         iconView.image = model.icon
         titleLabel.text = model.title
         valueLabel.text = model.value
