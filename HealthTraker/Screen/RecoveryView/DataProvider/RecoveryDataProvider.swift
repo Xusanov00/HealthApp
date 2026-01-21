@@ -19,43 +19,41 @@ final class RecoveryDataProvider: NSObject, UITableViewDataSource, UITableViewDe
     // user data
     var selectedRange: ChartRange? {
         didSet {
-            tableView.reloadRows(at: [.init(row: 2, section: 0)], with: .none)
+            tableView.reloadRows(at: [.init(row: 0, section: 1)], with: .none)
         }
     }
     var recoverySelectedData: HealthInfoDM? {
         didSet {
-            tableView.reloadRows(at: [.init(row: 1, section: 0)], with: .none)
+            recoveryHeaderView?.configureHeader(data: recoverySelectedData)
         }
     }
-    var recoveryData: [HealthInfoDM] = [] {
-        didSet {
-            tableView.reloadRows(at: [.init(row: 2, section: 0)], with: .none)
-        }
-    }
+    var calendarRecoveryData: [HealthInfoDM] = []
+    var recoveryData: [HealthInfoDM] = []
     var vsrData: [HealthInfoDM] = [] {
         didSet {
-            tableView.reloadRows(at: [.init(row: 3, section: 0)], with: .none)
+            tableView.reloadRows(at: [.init(row: 1, section: 1)], with: .none)
         }
     }
     var pulseData: [HealthInfoDM] = [] {
         didSet {
-            tableView.reloadRows(at: [.init(row: 4, section: 0)], with: .none)
+            tableView.reloadRows(at: [.init(row: 2, section: 1)], with: .none)
         }
     }
     var breathData: [HealthInfoDM] = [] {
         didSet {
-            tableView.reloadRows(at: [.init(row: 5, section: 0)], with: .none)
+            tableView.reloadRows(at: [.init(row: 3, section: 1)], with: .none)
         }
     }
     var sleepData: [HealthInfoDM] = [] {
         didSet {
-            tableView.reloadRows(at: [.init(row: 6, section: 0)], with: .none)
+            tableView.reloadRows(at: [.init(row: 4, section: 1)], with: .none)
         }
     }
+    
     var delegate: RecoveryDataProviderDelegate?
-    
-    private unowned let tableView: UITableView
-    
+    private weak var recoveryHeaderView: RecoveryHeaderView?
+    private let tableView: UITableView
+
     init(tableView: UITableView) {
         self.tableView = tableView
         super.init()
@@ -64,7 +62,6 @@ final class RecoveryDataProvider: NSObject, UITableViewDataSource, UITableViewDe
         tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.register(CalendarTableViewCell.self, forCellReuseIdentifier: CalendarTableViewCell.string)
-        tableView.register(RecoveryTableViewCell.self, forCellReuseIdentifier: RecoveryTableViewCell.string)
         tableView.register(RecoveryChartTableViewCell.self, forCellReuseIdentifier: RecoveryChartTableViewCell.string)
         tableView.register(LineChartTableViewCell.self, forCellReuseIdentifier: LineChartTableViewCell.string)
         tableView.register(BarChartTableViewCell.self, forCellReuseIdentifier: BarChartTableViewCell.string)
@@ -73,65 +70,64 @@ final class RecoveryDataProvider: NSObject, UITableViewDataSource, UITableViewDe
 
 extension RecoveryDataProvider {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        7
+        switch section {
+        case 0: return 1
+        case 1: return 5
+        default: return 0
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.row {
+        switch (indexPath.section, indexPath.row) {
             // MARK: - Calendar
-        case 0:
+        case (0, 0):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: CalendarTableViewCell.string,
                 for: indexPath
             ) as? CalendarTableViewCell else { return UITableViewCell() }
             cell.delegate = self
-            cell.configureCell(data: recoveryData)
+            cell.configureCell(data: calendarRecoveryData)
             return cell
-            
-            // MARK: - Recovery percentage
-        case 1:
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: RecoveryTableViewCell.string,
-                for: indexPath
-            ) as? RecoveryTableViewCell else { return UITableViewCell() }
-            cell.configureCell(data: recoverySelectedData)
-            return cell
-            
+
             // MARK: - Recovery Barchart
-        case 2:
+        case (1,0):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: RecoveryChartTableViewCell.string,
                 for: indexPath
             ) as? RecoveryChartTableViewCell else { return UITableViewCell() }
-            cell.configureChart(range: selectedRange, yValues: [0,34,67,100], data: recoveryData)
-            
+            cell.delegate = self
+            cell.configureChart(range: selectedRange, yValues: [0,34,67,70,100], data: recoveryData)
             cell.configureMetrics([
-                .init(icon: UIImage(named: "vsr_ic"),
-                      title: "вариабельность сердечного ритма",
-                      value: "\(Int(vsrData.last?.value ?? 0))",
-                      trendIcon: UIImage(systemName: "arrowtriangle.down.fill"),
-                      trendColor: .systemYellow),
-                .init(icon: UIImage(named: "pulse_ic"),
-                      title: "пульс в покое",
-                      value: "\(Int(pulseData.last?.value ?? 0))",
-                      trendIcon: UIImage(systemName: "arrowtriangle.down.fill"),
-                      trendColor: .systemYellow),
-                .init(icon: UIImage(named: "lungs_ic"),
-                      title: "вдохов в минуту",
-                      value: "\(breathData.last?.value ?? 0)",
-                      trendIcon: UIImage(systemName: "arrowtriangle.up.fill"),
-                      trendColor: .systemGreen),
-                .init(icon: UIImage(named: "moon_ic"),
-                      title: "результативность сна",
-                      value: "\(Int(sleepData.last?.value ?? 0))%",
-                      trendIcon: UIImage(systemName: "arrowtriangle.up.fill"),
-                      trendColor: .systemGreen)
+                .init(
+                    data: vsrData,
+                    icon: "vsr_ic",
+                    subtitle: "вариабельность сердечного ритма",
+                ),
+                .init(
+                    data: pulseData,
+                    icon: "pulse_ic",
+                    subtitle: "пульс в покое",
+                ),
+                .init(
+                    data: breathData,
+                    icon: "lungs_ic",
+                    subtitle: "вдохов в минуту",
+                ),
+                .init(
+                    data: sleepData,
+                    icon: "moon_ic",
+                    subtitle: "результативность сна",
+                    inPercent: true,
+                ),
             ])
-            cell.onRangeChanged = { self.delegate?.rangeChanged(range: $0) }
             return cell
             
             // MARK: - VSR Linechart
-        case 3:
+        case (1,1):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: LineChartTableViewCell.string,
                 for: indexPath
@@ -140,7 +136,7 @@ extension RecoveryDataProvider {
             return cell
             
             // MARK: - Pulse Linechart
-        case 4:
+        case (1,2):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: LineChartTableViewCell.string,
                 for: indexPath
@@ -149,7 +145,7 @@ extension RecoveryDataProvider {
             return cell
             
             // MARK: - Breath Linechart
-        case 5:
+        case (1,3):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: LineChartTableViewCell.string,
                 for: indexPath
@@ -158,7 +154,7 @@ extension RecoveryDataProvider {
             return cell
             
             // MARK: - Sleep Barchart
-        case 6:
+        case (1,4):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: BarChartTableViewCell.string,
                 for: indexPath
@@ -171,8 +167,51 @@ extension RecoveryDataProvider {
     }
 }
 
+// MARK: - Recovery Header View
+extension RecoveryDataProvider {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard section == 1 else { return nil }
+        let header = RecoveryHeaderView()
+        header.configureHeader(data: recoverySelectedData)
+        self.recoveryHeaderView = header
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        section == 1 ? 160 : 0
+    }
+    
+    // removes padding above the headerView
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        0
+    }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        UIView(frame: .zero)
+    }
+}
+
+// MARK: - Stretch Header View
+extension RecoveryDataProvider {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let header = tableView.tableHeaderView else { return }
+
+        let offset = scrollView.contentOffset.y
+        if offset < 0 {
+            header.frame.size.height = 160 + abs(offset)
+            tableView.tableHeaderView = header
+        }
+    }
+}
+
+// MARK: - Date selection
 extension RecoveryDataProvider: CalendarTableViewCellDelegate {
     func dateChanged(date: Date) {
         delegate?.dateChanged(date: date)
+    }
+}
+
+extension RecoveryDataProvider: RecoveryChartTableViewCellDelegate {
+    func rangeChanged(range: ChartRange) {
+        delegate?.rangeChanged(range: range)
     }
 }

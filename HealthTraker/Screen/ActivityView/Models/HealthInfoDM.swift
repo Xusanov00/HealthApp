@@ -1,5 +1,5 @@
 //
-//  ActivityDM.swift
+//  HealthInfoDM.swift
 //  HealthTraker
 //
 //  Created by Ali on 11/12/2025.

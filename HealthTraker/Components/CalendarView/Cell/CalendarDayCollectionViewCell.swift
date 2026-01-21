@@ -48,10 +48,12 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
         dateCircle.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            dateCircle.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            dateCircle.topAnchor.constraint(equalTo: contentView.topAnchor),
             dateCircle.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            dateCircle.widthAnchor.constraint(equalToConstant: 36),
-            dateCircle.heightAnchor.constraint(equalToConstant: 36)
+            dateCircle.widthAnchor.constraint(equalToConstant: 44),
+            dateCircle.heightAnchor.constraint(equalToConstant: 44),
+            dateCircle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dateCircle.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
 
@@ -65,8 +67,8 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
 
         NSLayoutConstraint.activate([
             weekdayLabel.topAnchor.constraint(equalTo: dateCircle.bottomAnchor, constant: 4),
-            weekdayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
-            weekdayLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
+            weekdayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            weekdayLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             weekdayLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -4)
         ])
     }

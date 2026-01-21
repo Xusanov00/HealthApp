@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ActivityDataProviderDelegate {
+    func recoveryTapped()
+}
+
 final class ActivityDataProvider: NSObject{
     var onDateSelected: ((Date) -> Void)?
     var onRangeChanged: ((ChartRange) -> Void)?
@@ -16,16 +20,17 @@ final class ActivityDataProvider: NSObject{
             collectionView.reloadData()
         }
     }
+    var delegate: ActivityDataProviderDelegate?
     
-    private unowned let collectionView: UICollectionView
+    private let collectionView: UICollectionView
     
     init(collectionView: UICollectionView) {
         self.collectionView = collectionView
         super.init()
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.allowsSelection = false
-        collectionView.register(SleepCollectionViewCell.self, forCellWithReuseIdentifier: CalendarTableViewCell.string)
+        collectionView.allowsMultipleSelection = false
+        collectionView.register(SleepCollectionViewCell.self, forCellWithReuseIdentifier: SleepCollectionViewCell.string)
         collectionView.register(RecoveryCollectionViewCell.self, forCellWithReuseIdentifier: RecoveryCollectionViewCell.string)
         collectionView.register(StrainCollectionViewCell.self, forCellWithReuseIdentifier: StrainCollectionViewCell.string)
         collectionView.register(WaterTrackerCollectionViewCell.self, forCellWithReuseIdentifier: WaterTrackerCollectionViewCell.string)
@@ -44,31 +49,36 @@ extension ActivityDataProvider: UICollectionViewDelegate, UICollectionViewDataSo
                 withReuseIdentifier: SleepCollectionViewCell.string,
                 for: indexPath
             ) as? SleepCollectionViewCell else { return UICollectionViewCell() }
-            
             return cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: RecoveryCollectionViewCell.string,
                 for: indexPath
             ) as? RecoveryCollectionViewCell else { return UICollectionViewCell() }
-
+            cell.configureCell(data: self.recoveryData.last!)
             return cell
         case 2:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: StrainCollectionViewCell.string,
                 for: indexPath
             ) as? StrainCollectionViewCell else { return UICollectionViewCell() }
-            
+            cell.configureCell(data: self.recoveryData.last!)
             return cell
         case 3:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: WaterTrackerCollectionViewCell.string,
                 for: indexPath
             ) as? WaterTrackerCollectionViewCell else { return UICollectionViewCell() }
-            
+            cell.configureCell(data: self.recoveryData.last!)
             return cell
         default:
             return UICollectionViewCell()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == 1 {
+            delegate?.recoveryTapped()
         }
     }
 }

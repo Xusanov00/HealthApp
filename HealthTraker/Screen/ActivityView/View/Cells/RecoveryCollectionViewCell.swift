@@ -10,6 +10,7 @@ import UIKit
 class RecoveryCollectionViewCell: UICollectionViewCell {
     private lazy var iconeView = UIImageView().configured { view in
         view.image = UIImage(named: "recovery_ic")
+        view.contentMode = .scaleAspectFit
     }
     private lazy var titleLabel = UILabel().configured { label in
         label.text = "Восстановление"

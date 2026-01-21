@@ -15,17 +15,19 @@ enum ChartRange {
 
 class RecoveryViewModel {
     var selectedRange: ChartRange = .day
-    lazy var recoverySelectedData: HealthInfoDM? = Mocks.recoveryData(range: .day).last
-    lazy var recoveryData: [HealthInfoDM] = Mocks.recoveryData(range: selectedRange)
-    lazy var vsrData: [HealthInfoDM] = Mocks.vsrData(range: selectedRange)
-    lazy var pulseData: [HealthInfoDM] = Mocks.pulseData(range: selectedRange)
-    lazy var breathData: [HealthInfoDM] = Mocks.breathData(range: selectedRange)
-    lazy var sleepData: [HealthInfoDM] = Mocks.sleepData(range: selectedRange)
+    var calendarRecoveryData: [HealthInfoDM] = Mocks.recoveryData(range: .day)
+    var recoverySelectedData: HealthInfoDM? = Mocks.recoveryData(range: .day).last
+    var recoveryData: [HealthInfoDM] = Mocks.recoveryData(range: .day)
+    var vsrData: [HealthInfoDM] = Mocks.vsrData(range: .day)
+    var pulseData: [HealthInfoDM] = Mocks.pulseData(range: .day)
+    var breathData: [HealthInfoDM] = Mocks.breathData(range: .day)
+    var sleepData: [HealthInfoDM] = Mocks.sleepData(range: .day)
     
     func dateChanged(date: Date) {
         recoverySelectedData = Mocks.recoveryData(
-            range: selectedRange
+            range: .day
         ).filter { date == $0.date }.first
+        print(recoverySelectedData?.value, "viewModel")
     }
     
     func rangeChanged(range: ChartRange) {
@@ -35,5 +37,6 @@ class RecoveryViewModel {
         vsrData = Mocks.vsrData(range: selectedRange)
         breathData = Mocks.breathData(range: selectedRange)
         sleepData = Mocks.sleepData(range: selectedRange)
+        print(recoveryData.first?.value, "viewModel")
     }
 }

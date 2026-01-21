@@ -13,6 +13,7 @@ protocol CalendarViewDelegate {
 
 class CalendarView: CleanView {
     private weak var calendarCollectionView: UICollectionView!
+    private var isSelectionEnabled = true
     var dateArray: [HealthInfoDM] = [] {
         didSet {
             scrollToLastItem()
@@ -28,17 +29,18 @@ class CalendarView: CleanView {
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 40, height: 60)
+        layout.minimumLineSpacing = 14
+        layout.minimumInteritemSpacing = 14
+        layout.itemSize = CGSize(width: 44, height: 64)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        collectionView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 0, right: 12)
         collectionView.allowsMultipleSelection = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(
             CalendarDayCollectionViewCell.self,
             forCellWithReuseIdentifier: CalendarDayCollectionViewCell.string
         )
-        collectionView.register(SelectableCell.self, forCellWithReuseIdentifier: SelectableCell.string)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -52,12 +54,19 @@ class CalendarView: CleanView {
         self.calendarCollectionView = collectionView
     }
     
-    func scrollToLastItem(animated: Bool = false) {
+    private func scrollToLastItem(animated: Bool = false) {
         DispatchQueue.main.async {
             let lastIndex = self.calendarCollectionView.numberOfItems(inSection: 0) - 1
             guard lastIndex >= 0 else { return }
-            
+
             let indexPath = IndexPath(item: lastIndex, section: 0)
+
+            self.calendarCollectionView.selectItem(
+                at: indexPath,
+                animated: false,
+                scrollPosition: .right
+            )
+
             self.calendarCollectionView.scrollToItem(
                 at: indexPath,
                 at: .right,
@@ -79,12 +88,16 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
         ) as? CalendarDayCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.isSelected = (indexPath.row == dateArray.count-1)
         cell.configureCell(data: dateArray[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard isSelectionEnabled else { return }
+        isSelectionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.isSelectionEnabled = true
+        }
         delegate?.dateChanged(date: dateArray[indexPath.row].date)
     }
 }

@@ -28,17 +28,7 @@ struct LineChartComponent: View {
         .chartXAxis { xAxis }
         .chartYAxis { yAxis }
         .padding()
-//        .mask {
-//            GeometryReader { geo in
-//                Rectangle()
-//                    .scaleEffect(x: revealProgress, anchor: .leading)
-//            }
-//        }
-//        .onAppear {
-//            withAnimation(.easeOut(duration: 0.8)) {
-//                revealProgress = 1
-//            }
-//        }
+        .ignoresSafeArea()
     }
 }
 
@@ -116,10 +106,12 @@ private extension LineChartComponent {
     }
 }
 
-// MARK: - X Range
+// MARK: - X Axis
 private extension LineChartComponent {
     var xAxis: some AxisContent {
-        AxisMarks(values: viewModel.data.map(\.date)) { value in
+        let lastDate = viewModel.data.last?.date
+
+        return AxisMarks(values: viewModel.data.map(\.date)) { value in
             AxisValueLabel(verticalSpacing: 10) {
                 if
                     let date = value.as(Date.self),
@@ -128,29 +120,50 @@ private extension LineChartComponent {
                     Text(point.label)
                         .font(.caption2)
                         .fixedSize()
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            date == lastDate
+                            ? Color.white
+                            : Color.clear
+                        )
+                        .foregroundStyle(
+                            date == lastDate
+                            ? Color.black
+                            : ColorLibrary.white.withAlphaComponent(0.3).color
+                        )
+                        .clipShape(Capsule())
                         .offset(x: -12)
-                        .foregroundStyle(ColorLibrary.gray4.color)
                 }
             }
         }
     }
 }
 
-// MARK: - Y Range
+// MARK: - Y Axis
 private extension LineChartComponent {
     var yAxis: some AxisContent {
-        AxisMarks(position: .trailing, values: viewModel.yValues) { value in
-            AxisGridLine()
-                .foregroundStyle(ColorLibrary.gray3.color)
-            AxisValueLabel(horizontalSpacing: 10) {
-                if let v = value.as(Double.self) {
+        AxisMarks(position: .trailing, values: viewModel.yValues) { axisValue in
+            if let value = axisValue.as(Double.self) {
+                AxisGridLine()
+                    .foregroundStyle(
+                        viewModel.isMarkedValue(value)
+                        ? ColorLibrary.white.color
+                        : ColorLibrary.white.withAlphaComponent(0.2).color
+                    )
+
+                AxisValueLabel(horizontalSpacing: 10) {
                     Text(
-                        v.formatted(
-                            .number.precision(.fractionLength(0...1))
+                        value.valueFormatter(
+                            inPercent: viewModel.isPercentage
                         )
                     )
                     .font(.caption2)
-                    .foregroundStyle(ColorLibrary.gray4.color)
+                    .foregroundStyle(
+                        viewModel.isMarkedValue(value)
+                        ? ColorLibrary.white.color
+                        : ColorLibrary.white.withAlphaComponent(0.3).color
+                    )
                 }
             }
         }

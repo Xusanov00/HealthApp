@@ -20,6 +20,13 @@ final class CircleMetricView: CleanView {
             let clamped = max(0, min(progress, 1))
             progressLayer.strokeEnd = clamped
             updateMask()
+            updateEndShadow()
+        }
+    }
+
+    var showsEndShadow: Bool = false {
+        didSet {
+            endShadowLayer.isHidden = !showsEndShadow
         }
     }
 
@@ -54,6 +61,11 @@ final class CircleMetricView: CleanView {
             updateContent()
         }
     }
+    var lineWidth: CGFloat = 10 {
+        didSet {
+            
+        }
+    }
 
     var stackSpacing: CGFloat = 2 {
         didSet { stackView.spacing = stackSpacing }
@@ -63,7 +75,7 @@ final class CircleMetricView: CleanView {
     private let trackLayer = CAShapeLayer()
     private let progressLayer = CAShapeLayer()
     private let trackMaskLayer = CAShapeLayer()
-
+    private let endShadowLayer = CAShapeLayer()
     // MARK: - UI
     private let stackView = UIStackView()
     private let imageView = UIImageView()
@@ -71,7 +83,6 @@ final class CircleMetricView: CleanView {
     private let subtitleLabel = UILabel()
 
     // MARK: - Constants
-    private let lineWidth: CGFloat = 10
     private var circleCenter: CGPoint = .zero
     private var circleRadius: CGFloat = 0
     private let startAngle = -CGFloat.pi / 2
@@ -119,16 +130,28 @@ final class CircleMetricView: CleanView {
 
     private func setupLayers() {
         trackLayer.fillColor = UIColor.clear.cgColor
-		trackLayer.strokeColor = ColorLibrary.gray3.cgColor
+        trackLayer.strokeColor = ColorLibrary.white.withAlphaComponent(0.2).cgColor
         trackLayer.lineCap = .butt
         trackLayer.mask = nil
 
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
         progressLayer.strokeColor = color.cgColor
+        
+        endShadowLayer.fillColor = UIColor.clear.cgColor
+        endShadowLayer.backgroundColor = color.cgColor
+        endShadowLayer.shadowColor = UIColor.black.cgColor
+        endShadowLayer.shadowOpacity = 0.35
+        endShadowLayer.shadowRadius = 6
+//        endShadowLayer.shadowOffset = .zero
+        
+        endShadowLayer.zPosition = 2
+        progressLayer.zPosition = 1
+        trackLayer.zPosition = 0
 
         layer.addSublayer(trackLayer)
         layer.addSublayer(progressLayer)
+        layer.addSublayer(endShadowLayer)
     }
 
     // MARK: - Layout
@@ -136,6 +159,7 @@ final class CircleMetricView: CleanView {
         super.layoutSubviews()
         setupLayouts()
         updateFonts(for: bounds.size)
+        updateEndShadow()
     }
     
     private func setupLayouts() {
@@ -165,6 +189,32 @@ final class CircleMetricView: CleanView {
         applyStyle()
     }
 
+    private func updateEndShadow() {
+        guard showsEndShadow else { return }
+
+        let angle = startAngle + progressLayer.strokeEnd * 2 * .pi
+        let r = circleRadius
+
+        let endPoint = CGPoint(
+            x: circleCenter.x + r * cos(angle),
+            y: circleCenter.y + r * sin(angle)
+        )
+
+        let capRadius = progressLayer.lineWidth / 2
+
+        let path = UIBezierPath(
+            ovalIn: CGRect(
+                x: endPoint.x - capRadius,
+                y: endPoint.y - capRadius,
+                width: capRadius * 2,
+                height: capRadius * 2
+            )
+        )
+
+        endShadowLayer.path = path.cgPath
+        endShadowLayer.shadowPath = path.cgPath
+    }
+    
     private func updateMask() {
         let endAngle = startAngle + 2 * .pi
         let maskStart = startAngle + progressLayer.strokeEnd * 2 * .pi
@@ -186,8 +236,8 @@ final class CircleMetricView: CleanView {
     private func updateFonts(for size: CGSize) {
         let base = min(size.width, size.height)
 
-        titleLabel.font = .boldSystemFont(ofSize: base * 0.35)
-        subtitleLabel.font = .systemFont(ofSize: base * 0.14)
+        titleLabel.font = UIFont.systemFont(ofSize: base * 0.3, weight: .heavy)
+        subtitleLabel.font = .systemFont(ofSize: base * 0.1)
     }
     
     private func updateProgress() {

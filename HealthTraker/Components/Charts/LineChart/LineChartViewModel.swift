@@ -5,26 +5,19 @@
 //  Created by User on 16/01/26.
 //
 
-
-//
-//  BarChartViewModel.swift
-//  HealthTraker
-//
-//  Created by User on 16/01/26.
-//
-
 import SwiftUI
 
 final class LineChartViewModel: ObservableObject {
     // MARK: - Setters
     @Published var animatedData: [ChartAnimatedDM] = []
+    @Published var markedLineValue: Double = 0
+    @Published var isPercentage = false
     @Published var data: [HealthInfoDM] = [] {
         didSet {
             setData(data)
         }
     }
     @Published var showPointValues: Bool = false
-    @Published var isInPercent: Bool = false
     @Published var lineColor: Color = ColorLibrary.green.color
     @Published var yValues: [Double] = [] {
         didSet {
@@ -78,14 +71,13 @@ extension LineChartViewModel {
 // MARK: - Chart mapper
 extension LineChartViewModel {
     func setData(_ source: [HealthInfoDM]) {
-
         let items = source.map {
             ChartAnimatedDM(
                 id: $0.id,
                 date: $0.date,
                 label: $0.label,
                 value: $0.value,
-                animatedValue: $0.value * 0.7
+                animatedValue: $0.value * 0.6
             )
         }
 
@@ -94,7 +86,7 @@ extension LineChartViewModel {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-            withAnimation(.easeOut(duration: 0.6)) {
+            withAnimation(.easeOut(duration: 0.2)) {
                 self.animatedData = items.map {
                     var item = $0
                     item.animatedValue = item.value
@@ -102,5 +94,27 @@ extension LineChartViewModel {
                 }
             }
         }
+    }
+}
+
+// MARK: - Chart Y axis value configuration
+extension LineChartViewModel {
+    func formattedValue(_ value: Double) -> String {
+        let formatted = value.formatted(
+            .number.precision(.fractionLength(0...1))
+        )
+        
+        return isPercentage
+        ? "\(formatted)%"
+        : formatted
+    }
+    
+    func isMarkedValue(_ value: Double) -> Bool {
+        guard
+            value != 0
+        else {
+            return false
+        }
+        return abs(value - markedLineValue) < 0.0001
     }
 }

@@ -108,7 +108,7 @@ class WaterTrackerCollectionViewCell: UICollectionViewCell {
     
     // configure data
     func configureCell(data: HealthInfoDM) {
-        cirlceView.title = "\(Int(data.value))%"
+        cirlceView.title = "\(Int(data.value))"
         cirlceView.progress = CGFloat(data.value / 21)
     }
 }

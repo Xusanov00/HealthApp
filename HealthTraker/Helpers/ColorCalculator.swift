@@ -37,10 +37,9 @@ public struct DefaultColorCalculator: ColorCalculator {
 public extension UIColor {
 
     static func calculated(
-        for value: CGFloat,
-        using calculator: ColorCalculator = DefaultColorCalculator()
+        for value: CGFloat
     ) -> UIColor {
-        UIColor.from(calculator.color(for: value))
+        UIColor.from(DefaultColorCalculator().color(for: value))
     }
 
     static func from(_ calculatedColor: CalculatedColor) -> UIColor {
@@ -55,10 +54,9 @@ public extension UIColor {
 public extension Color {
 
     static func calculated(
-        for value: CGFloat,
-        using calculator: ColorCalculator = DefaultColorCalculator()
+        for value: CGFloat
     ) -> Color {
-        Color.from(calculator.color(for: value))
+        Color.from(DefaultColorCalculator().color(for: value))
     }
 
     static func from(_ calculatedColor: CalculatedColor) -> Color {

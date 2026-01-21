@@ -17,13 +17,14 @@ extension BarChartViewModel {
 final class BarChartViewModel: ObservableObject {
     // MARK: - Setters
     @Published var animatedData: [ChartAnimatedDM] = []
+    @Published var markedLineValue: Double = 0
+    @Published var isPercentage = false
     @Published var data: [HealthInfoDM] = [] {
         didSet {
             setData(data)
         }
     }
     @Published var showPointValues: Bool = false
-    @Published var isInPercent: Bool = false
     @Published var yValues: [Double] = [] {
         didSet {
             recalculateYRange()
@@ -76,7 +77,7 @@ extension BarChartViewModel {
     }
 }
 
-// MARK: - Chart mapper
+// MARK: - Chart mapper for animated model
 extension BarChartViewModel {
     func setData(_ source: [HealthInfoDM]) {
         let items = source.map {
@@ -91,7 +92,7 @@ extension BarChartViewModel {
         
         self.animatedData = items
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
             withAnimation(.easeOut(duration: 0.6)) {
                 self.animatedData = items.map {
                     var item = $0
@@ -100,5 +101,17 @@ extension BarChartViewModel {
                 }
             }
         }
+    }
+}
+
+// MARK: - Chart Y axis value configuration
+extension BarChartViewModel {
+    func isMarkedValue(_ value: Double) -> Bool {
+        guard
+            value != 0
+        else {
+            return false
+        }
+        return value == markedLineValue
     }
 }

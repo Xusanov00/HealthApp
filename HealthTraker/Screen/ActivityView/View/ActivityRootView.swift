@@ -15,6 +15,7 @@ final class ActivityRootView: CleanView, UITableViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
+        backgroundColor = .red
     }
     
     private func setupCollectionView() {

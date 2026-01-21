@@ -9,6 +9,7 @@
 import UIKit
 
 class RecoveryVC: UIViewController, RootViewProviding {
+    
     typealias RootView = RecoveryRootView
     private lazy var dataProvider: RecoveryDataProvider = {
         let provider = RecoveryDataProvider(tableView: rootView.tableView)
@@ -30,7 +31,9 @@ class RecoveryVC: UIViewController, RootViewProviding {
 
 extension RecoveryVC {
     private func appearanceSettings() {
+        rootView.delegate = self
         dataProvider.delegate = self
+        dataProvider.calendarRecoveryData = viewModel.calendarRecoveryData
         dataProvider.recoveryData = viewModel.recoveryData
         dataProvider.pulseData = viewModel.pulseData
         dataProvider.vsrData = viewModel.vsrData
@@ -56,5 +59,13 @@ extension RecoveryVC: RecoveryDataProviderDelegate {
         dataProvider.breathData = viewModel.breathData
         dataProvider.sleepData = viewModel.sleepData
         dataProvider.selectedRange = viewModel.selectedRange
+        print(viewModel.vsrData.first?.value, "vc")
+    }
+}
+
+// MARK: - RecoveryRootViewDelegate
+extension RecoveryVC: RecoveryRootViewDelegate {
+    func dismissTapped() {
+        self.dismiss(animated: true)
     }
 }

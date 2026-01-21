@@ -14,7 +14,7 @@ class ActivityVC: UIViewController, RootViewProviding {
         return provider
     }()
     
-    private var viewModel = ActivityViewModel()
+    private var viewModel = RecoveryViewModel()
 
     override func loadView() {
         view = ActivityRootView()
@@ -24,9 +24,21 @@ class ActivityVC: UIViewController, RootViewProviding {
         super.viewDidLoad()
         appearanceSettings()
     }
-    
 }
 
+// MARK: - Appearance
 extension ActivityVC {
-    private func appearanceSettings() { }
+    private func appearanceSettings() {
+        dataProvider.delegate = self
+        dataProvider.recoveryData = viewModel.recoveryData
+    }
+}
+
+// MARK: - ActivityDataProviderDelegate
+extension ActivityVC: ActivityDataProviderDelegate {
+    func recoveryTapped() {
+        let recoveryVC = RecoveryVC()
+        recoveryVC.modalPresentationStyle = .fullScreen
+        present(recoveryVC, animated: true)
+    }
 }
