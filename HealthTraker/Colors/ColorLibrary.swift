@@ -9,12 +9,12 @@ import UIKit
 import SwiftUI
 
 class ColorLibrary {
-	static var white: UIColor = #colorLiteral(red: 0.9999999404, green: 1, blue: 1, alpha: 1)
-	static var backgroundBlack: UIColor =  #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-	static var gray1: UIColor = #colorLiteral(red: 0.1019608006, green: 0.1019608006, blue: 0.1019608006, alpha: 1)
-    static var green: UIColor = UIColor(hex: "#A4FF00")
-    static var yellow: UIColor = UIColor(hex: "#FFCF13")
-    static var teal: UIColor = UIColor(hex: "#24FFFE")
-    static var gradientLeft: UIColor = #colorLiteral(red: 0.02745302767, green: 0.1999885738, blue: 0.1999441385, alpha: 1)
-    static var gradientRight: UIColor = #colorLiteral(red: 0, green: 0.1019896194, blue: 0.1999958456, alpha: 1)
+	static let gray: UIColor = UIColor(hex: "#1A1A1A")
+    static let red: UIColor = UIColor(hex: "#FF0054")
+    static let darkGreen: UIColor = UIColor(hex: "#00DB59")
+    static let lightGreen: UIColor = UIColor(hex: "#A4FF00")
+    static let yellow: UIColor = UIColor(hex: "#FFCF13")
+    static let teal: UIColor = UIColor(hex: "#24FFFE")
+    static let gradientLeft: UIColor = #colorLiteral(red: 0.02745098039, green: 0.2, blue: 0.2, alpha: 1)
+    static let gradientRight: UIColor = #colorLiteral(red: 0, green: 0.1019896194, blue: 0.1999958456, alpha: 1)
 }

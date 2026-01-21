@@ -69,7 +69,7 @@ extension BarChartViewModel {
         }
 
         let step = data[1].date.timeIntervalSince(data[0].date)
-        let padding: TimeInterval = step * 0.5
+        let padding: TimeInterval = step * 0.3
 
         return first.addingTimeInterval(-padding)
             ...

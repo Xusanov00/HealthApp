@@ -12,7 +12,7 @@ struct Mocks {
         switch range {
         case .day:
             [
-                .init(date: date("2023-09-04"), value: 211, label: "Mon"),
+                .init(date: date("2023-09-04"), value: 100, label: "Mon"),
                 .init(date: date("2023-09-05"), value: 53, label: "Tue"),
                 .init(date: date("2023-09-06"), value: 62, label: "Wed"),
                 .init(date: date("2023-09-07"), value: 22, label: "Thu"),

@@ -18,7 +18,7 @@ final class LineChartViewModel: ObservableObject {
         }
     }
     @Published var showPointValues: Bool = false
-    @Published var lineColor: Color = ColorLibrary.green.color
+    @Published var lineColor: Color = ColorLibrary.lightGreen.color
     @Published var yValues: [Double] = [] {
         didSet {
             recalculateYRange()
@@ -60,7 +60,7 @@ extension LineChartViewModel {
         }
 
         let step = data[1].date.timeIntervalSince(data[0].date)
-        let padding: TimeInterval = step * 0.5
+        let padding: TimeInterval = step * 0.3
 
         return first.addingTimeInterval(-padding)
             ...

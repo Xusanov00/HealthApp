@@ -44,9 +44,9 @@ public extension UIColor {
 
     static func from(_ calculatedColor: CalculatedColor) -> UIColor {
         switch calculatedColor {
-        case .red: return .systemRed
-        case .yellow: return .systemYellow
-        case .green: return .systemGreen
+        case .red: return ColorLibrary.red
+        case .yellow: return ColorLibrary.yellow
+        case .green: return ColorLibrary.darkGreen
         }
     }
 }
@@ -61,9 +61,9 @@ public extension Color {
 
     static func from(_ calculatedColor: CalculatedColor) -> Color {
         switch calculatedColor {
-        case .red: return .red
-        case .yellow: return .yellow
-        case .green: return .green
+        case .red: return ColorLibrary.red.color
+        case .yellow: return ColorLibrary.yellow.color
+        case .green: return ColorLibrary.darkGreen.color
         }
     }
 }

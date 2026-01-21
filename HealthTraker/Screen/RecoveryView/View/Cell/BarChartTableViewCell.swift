@@ -12,15 +12,15 @@ class BarChartTableViewCell: UITableViewCell {
     @Published private var recoveryData: [HealthInfoDM] = []
     private let chartViewModel = BarChartViewModel()
     private let backView = UIView().configured { view in
-        view.backgroundColor = ColorLibrary.white
+        view.backgroundColor = .white
         view.layer.cornerRadius = 22
         view.alpha = 0.1
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let titleIconLabel = IconLabel().configured { view in
         view.textFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        view.textColor = ColorLibrary.white
-        view.iconColor = ColorLibrary.white.withAlphaComponent(0.5)
+        view.textColor = .white
+        view.iconColor = .white.withAlphaComponent(0.5)
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private lazy var hostingBarChart = UIHostingController(
@@ -29,7 +29,7 @@ class BarChartTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = ColorLibrary.backgroundBlack
+        backgroundColor = .black
         setupUI()
         initUI()
         setupConstraints()

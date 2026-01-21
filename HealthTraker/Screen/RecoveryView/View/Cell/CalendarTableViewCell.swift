@@ -18,7 +18,7 @@ class CalendarTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCalendarView()
-        backgroundColor = ColorLibrary.backgroundBlack
+        backgroundColor = .black
     }
     
     required init?(coder: NSCoder) {

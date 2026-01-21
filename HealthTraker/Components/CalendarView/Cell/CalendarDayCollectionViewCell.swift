@@ -7,18 +7,44 @@
 import UIKit
 
 class CalendarDayCollectionViewCell: UICollectionViewCell {
-
-    private let dateCircle = CircleMetricView().configured { view in
-        view.style = .solid
+    private var isFutureDay: Bool = false {
+        didSet {
+            if isFutureDay {
+                circleProgressView.isHidden = true
+                dayLabel.textColor = .white.withAlphaComponent(0.5)
+                weekdayLabel.textColor = .white.withAlphaComponent(0.5)
+            } else {
+                circleProgressView.isHidden = false
+                dayLabel.textColor = .white
+                weekdayLabel.textColor = .white
+            }
+        }
     }
-    private let weekdayLabel = UILabel()
-    private var formatter = DateFormatter().configured { formatter in
+    private let circleProgressView = CircleProgressView().configured { view in
+        view.trackStyle = .solid
+        view.trackColor = .black.withAlphaComponent(0.2)
+        view.lineWidth = 2
+        view.translatesAutoresizingMaskIntoConstraints = false
+    }
+    private let dayLabel = UILabel().configured { label in
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+    }
+    private let weekdayLabel = UILabel().configured { label in
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+    }
+    private let formatter = DateFormatter().configured { formatter in
         formatter.locale = Locale(identifier: "ru_RU")
     }
     private let glassView = UIVisualEffectView().configured { glassView in
         glassView.effect = UIBlurEffect(style: .systemMaterial)
     }
-    private var glassButton = UIButton().configured { button in
+    private let glassButton = UIButton().configured { button in
         if #available(iOS 26.0, *) {
             button.configuration = .glass()
         }
@@ -30,6 +56,7 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
         contentView.clipsToBounds = true
         setupLiquidGlassBackground()
         setupDateCircle()
+        setupDayLabel()
         setupWeekdayLabel()
     }
 
@@ -44,40 +71,43 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
     }
 
     private func setupDateCircle() {
-        contentView.addSubview(dateCircle)
-        dateCircle.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(circleProgressView)
 
         NSLayoutConstraint.activate([
-            dateCircle.topAnchor.constraint(equalTo: contentView.topAnchor),
-            dateCircle.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            dateCircle.widthAnchor.constraint(equalToConstant: 44),
-            dateCircle.heightAnchor.constraint(equalToConstant: 44),
-            dateCircle.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            dateCircle.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            circleProgressView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
+            circleProgressView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            circleProgressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
+            circleProgressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
+            circleProgressView.widthAnchor.constraint(equalToConstant: 36),
+            circleProgressView.heightAnchor.constraint(equalToConstant: 36),
+        ])
+    }
+    
+    private func setupDayLabel() {
+        contentView.addSubview(dayLabel)
+        
+        NSLayoutConstraint.activate([
+            dayLabel.centerXAnchor.constraint(equalTo: circleProgressView.centerXAnchor),
+            dayLabel.centerYAnchor.constraint(equalTo: circleProgressView.centerYAnchor),
         ])
     }
 
     private func setupWeekdayLabel() {
         contentView.addSubview(weekdayLabel)
-        weekdayLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        weekdayLabel.font = .systemFont(ofSize: 12)
-        weekdayLabel.textAlignment = .center
-        weekdayLabel.textColor = .white
-
         NSLayoutConstraint.activate([
-            weekdayLabel.topAnchor.constraint(equalTo: dateCircle.bottomAnchor, constant: 4),
+            weekdayLabel.topAnchor.constraint(equalTo: circleProgressView.bottomAnchor, constant: 2),
+            weekdayLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -2),
             weekdayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             weekdayLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            weekdayLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -4)
         ])
     }
 
-    func configureCell(data: HealthInfoDM) {
+    func configureCell(isFutureDay: Bool = false, data: HealthInfoDM) {
+        self.isFutureDay = isFutureDay
         formatter.dateFormat = "dd"
-        dateCircle.title = formatter.string(from: data.date)
-        dateCircle.color = UIColor.calculated(for: data.value)
-        dateCircle.progress = data.value/100
+        dayLabel.text = formatter.string(from: data.date)
+        circleProgressView.progressColor = UIColor.calculated(for: data.value)
+        circleProgressView.progress = data.value/100
 
         formatter.dateFormat = "EE"
         weekdayLabel.text = formatter.string(from: data.date)

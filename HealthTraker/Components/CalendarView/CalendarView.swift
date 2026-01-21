@@ -13,7 +13,6 @@ protocol CalendarViewDelegate {
 
 class CalendarView: CleanView {
     private weak var calendarCollectionView: UICollectionView!
-    private var isSelectionEnabled = true
     var dateArray: [HealthInfoDM] = [] {
         didSet {
             scrollToLastItem()
@@ -29,9 +28,9 @@ class CalendarView: CleanView {
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 14
-        layout.minimumInteritemSpacing = 14
-        layout.itemSize = CGSize(width: 44, height: 64)
+        layout.minimumLineSpacing = 12
+        layout.minimumInteritemSpacing = 12
+        layout.itemSize = CGSize(width: 40, height: 56)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 0, right: 12)
@@ -88,16 +87,18 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
         ) as? CalendarDayCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configureCell(data: dateArray[indexPath.row])
+        cell.configureCell(isFutureDay: false, data: dateArray[indexPath.row]) // TODO: Need to mark future days
         return cell
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        shouldSelectItemAt indexPath: IndexPath
+    ) -> Bool {
+        return true // TODO: Need to ban future days selection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard isSelectionEnabled else { return }
-        isSelectionEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.isSelectionEnabled = true
-        }
         delegate?.dateChanged(date: dateArray[indexPath.row].date)
     }
 }

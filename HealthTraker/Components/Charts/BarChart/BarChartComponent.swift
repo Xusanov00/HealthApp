@@ -8,7 +8,6 @@
 import Charts
 import SwiftUI
 
-
 // MARK: - View
 struct BarChartComponent: View {
     @ObservedObject var viewModel: BarChartViewModel
@@ -70,7 +69,7 @@ private extension BarChartComponent {
         .lineStyle(
             StrokeStyle(lineWidth: 1, dash: [6, 4])
         )
-        .foregroundStyle(ColorLibrary.white.color)
+        .foregroundStyle(.white)
     }
 }
 
@@ -89,7 +88,7 @@ private extension BarChartComponent {
                 )
                 .font(.caption2)
                 .offset(y: -8)
-                .foregroundStyle(ColorLibrary.white.color)
+                .foregroundStyle(.white)
             }
         }
     }
@@ -99,31 +98,26 @@ private extension BarChartComponent {
 private extension BarChartComponent {
     var xAxis: some AxisContent {
         let lastDate = viewModel.data.last?.date
-
-        return AxisMarks(values: viewModel.data.map(\.date)) { value in
-            AxisValueLabel(centered: false, multiLabelAlignment: .leading, horizontalSpacing: 0) {
-                if
-                    let date = value.as(Date.self),
-                    let point = viewModel.animatedData.first(where: { $0.date == date })
-                {
+        
+        return AxisMarks(preset: .aligned, position: .bottom, values: viewModel.data.map(\.date)) { value in
+            AxisValueLabel() {
+                if let date = value.as(Date.self),
+                   let point = viewModel.animatedData.first(where: { $0.date == date }) {
                     Text(point.label)
                         .font(.caption2)
-                        .fixedSize()
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 8)
                         .padding(.vertical, 2)
                         .background(
                             date == lastDate
                             ? Color.white
-                            : Color.white
+                            : .clear
                         )
                         .foregroundStyle(
                             date == lastDate
                             ? Color.black
-                            : Color.black//ColorLibrary.white.withAlphaComponent(0.3).color
+                            : .white.opacity(0.3)
                         )
                         .clipShape(Capsule())
-                        .offset(x: -12)
                 }
             }
         }
@@ -138,8 +132,8 @@ private extension BarChartComponent {
                 AxisGridLine()
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? ColorLibrary.white.color
-                        : ColorLibrary.white.withAlphaComponent(0.2).color
+                        ? .white
+                        : .white.opacity(0.2)
                     )
 
                 AxisValueLabel(horizontalSpacing: 10) {
@@ -151,8 +145,8 @@ private extension BarChartComponent {
                     .font(.caption2)
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? ColorLibrary.white.color
-                        : ColorLibrary.white.withAlphaComponent(0.3).color
+                        ? .white
+                        : .white.opacity(0.3)
                     )
                 }
             }

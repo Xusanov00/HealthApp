@@ -21,6 +21,8 @@ final class ActivityRootView: CleanView, UITableViewDelegate {
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 8)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         
         addSubview(collectionView)

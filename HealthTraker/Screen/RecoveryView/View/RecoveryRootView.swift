@@ -14,24 +14,24 @@ protocol RecoveryRootViewDelegate {
 
 class RecoveryRootView: CleanView {
     // MARK: - Subviews
-    private var recoveryTitleButton = UIButton().configured { button in
+    private let recoveryTitleButton = UIButton().configured { button in
         if #available(iOS 26.0, *) {
             button.configuration = .glass()
         } else {
-            button.backgroundColor = ColorLibrary.white.withAlphaComponent(0.1)
+            button.backgroundColor = .white.withAlphaComponent(0.1)
             button.layer.cornerRadius = 22
         }
         button.setTitle("Восстановление", for: .normal)
         button.setImage(UIImage(named: "recovery_ic"), for: .normal)
         button.configuration?.imagePadding = 10
     }
-    private var closeButton = UIButton().configured { button in
+    private let closeButton = UIButton().configured { button in
         button.setImage(UIImage(named: "xmark_ic"), for: .normal)
         button.addTarget(self, action: #selector(dismissTapped), for: .touchUpInside)
         if #available(iOS 26.0, *) {
             button.configuration = .glass()
         } else {
-            button.backgroundColor = ColorLibrary.white.withAlphaComponent(0.1)
+            button.backgroundColor = .white.withAlphaComponent(0.1)
             button.layer.cornerRadius = 22
         }
     }
@@ -55,7 +55,7 @@ class RecoveryRootView: CleanView {
     
     private func setupTableView() {
         let tableView = UITableView(frame: .zero, style: .grouped)
-		tableView.backgroundColor = ColorLibrary.backgroundBlack
+		tableView.backgroundColor = .black
         tableView.alwaysBounceVertical = true
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80.0

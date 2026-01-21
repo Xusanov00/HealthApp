@@ -11,12 +11,13 @@ import SwiftUI
 protocol RecoveryChartTableViewCellDelegate {
     func rangeChanged(range: ChartRange)
 }
+
 final class RecoveryChartTableViewCell: UITableViewCell {
     private let chartViewModel = BarChartViewModel()
 
     // MARK: - UI
 	private let backView = UIView().configured { view in
-        view.backgroundColor = ColorLibrary.white.withAlphaComponent(0.1)
+        view.backgroundColor = .white.withAlphaComponent(0.1)
 		view.layer.cornerRadius = 22
 		view.clipsToBounds = true
 	}
@@ -39,7 +40,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
         $0.axis = .horizontal
         $0.spacing = 4
         $0.distribution = .fillEqually
-        $0.backgroundColor = ColorLibrary.white.withAlphaComponent(0.05)
+        $0.backgroundColor = .white.withAlphaComponent(0.05)
         $0.layer.cornerRadius = 20
     }
 
@@ -56,7 +57,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     private let breathView = RecoveryMetricView()
     private let sleepView = RecoveryMetricView()
 
-    // MARK: - State
+    // MARK: - State day/week/month
     private var selectedRange: ChartRange? {
         didSet { updateButtonsUI() }
     }
@@ -66,7 +67,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = ColorLibrary.backgroundBlack
+        backgroundColor = .black
         selectionStyle = .none
 		
         setupUI()
@@ -79,7 +80,6 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     }
 
     // MARK: - Setup UI
-
     private func setupUI() {
         hostingBarChart.view.backgroundColor = .clear
 		hostingBarChart.view.clipsToBounds = true
@@ -131,7 +131,6 @@ final class RecoveryChartTableViewCell: UITableViewCell {
             metricsStack.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
             metricsStack.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -16)
         ])
-
     }
 
     private func configureButton(_ button: UIButton, title: String) {
@@ -148,7 +147,6 @@ final class RecoveryChartTableViewCell: UITableViewCell {
     }
 
     // MARK: - Actions
-
     @objc private func dayTapped() { select(.day) }
     @objc private func weekTapped() { select(.week) }
     @objc private func monthTapped() { select(.month) }

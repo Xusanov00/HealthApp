@@ -8,50 +8,42 @@
 import UIKit
 
 class RecoveryHeaderView: CleanView {
-    var backView = UIView().configured { view in
+    private let backView = UIView().configured { view in
         view.layer.cornerRadius = 22
         view.clipsToBounds = true
     }
-    let ringBackgroundSlashView = CircleProgressView().configured { circle in
+    private let ringBackgroundSlashView = CircleProgressView().configured { circle in
         circle.lineWidth = 10
         circle.progress = 0
-        circle.trackColor = ColorLibrary.white.withAlphaComponent(0.1)
+        circle.trackColor = .white.withAlphaComponent(0.1)
         circle.trackStyle = .dashed
         circle.dashLength = 1.25
         circle.dashSpacing = 2.5
         circle.translatesAutoresizingMaskIntoConstraints = false
     }
-    var ringProgressView = RingProgressView().configured { ring in
-        ring.startColor = UIColor(hex: "#0080FF")
-        ring.endColor = UIColor(hex: "#24FFFE")
+    private let ringProgressView = RingProgressView().configured { ring in
         ring.backgroundRingColor = .clear
         ring.ringWidth = 10
         ring.progress = 0
         ring.style = .round
         ring.translatesAutoresizingMaskIntoConstraints = false
     }
-    private var gradientLayer = CAGradientLayer()
-//    private var recoveryCircleView = CircleMetricView().configured { view in
-//        view.style = .doted
-//        view.lineWidth = 20
-//        view.icon = UIImage(named: "personBall_ic")
-//        view.showsEndShadow = true
-//    }
-    private var percentLabel = UILabel().configured { label in
+    private let gradientLayer = CAGradientLayer()
+    private let percentLabel = UILabel().configured { label in
         label.font = .systemFont(ofSize: 56, weight: .bold)
         label.numberOfLines = 1
         label.textColor = .white
     }
-    private var circleIcon = UIImageView().configured { image in
+    private let circleInsideImage = UIImageView().configured { image in
         image.image = UIImage(named: "personBall_ic")?.withRenderingMode(.alwaysTemplate)
-        image.backgroundColor = ColorLibrary.white.withAlphaComponent(0.05)
-        image.tintColor = ColorLibrary.white
+        image.tintColor = .white
         image.contentMode = .scaleAspectFill
+        image.translatesAutoresizingMaskIntoConstraints = false
     }
-    private var descriptionLabel = UILabel().configured { label in
+    private let descriptionLabel = UILabel().configured { label in
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.numberOfLines = 2
-        label.textColor = ColorLibrary.white.withAlphaComponent(0.6)
+        label.textColor = .white.withAlphaComponent(0.6)
         label.text = "Готовность вашего\nорганизма к нагрузкам"
     }
     
@@ -59,8 +51,8 @@ class RecoveryHeaderView: CleanView {
         super.init(frame: frame)
         setupBackView()
         setupGradient()
-//        setupRecoveryCircle()
         setupRingView()
+        setupImageView()
         setupTextView()
     }
 
@@ -93,32 +85,20 @@ class RecoveryHeaderView: CleanView {
         gradientLayer.cornerRadius = 22
         backView.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
-//    private func setupRecoveryCircle() {
-//        backView.addSubview(recoveryCircleView)
-//        recoveryCircleView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            recoveryCircleView.topAnchor.constraint(equalTo: backView.topAnchor, constant: 20),
-//            recoveryCircleView.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 16),
-//            recoveryCircleView.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -20),
-//            recoveryCircleView.widthAnchor.constraint(equalToConstant: 100),
-//            recoveryCircleView.heightAnchor.constraint(equalToConstant: 100)
-//        ])
-//    }
-    
+
     private func setupTextView() {
         let stackView = UIStackView(arrangedSubviews: [percentLabel, descriptionLabel])
         stackView.axis = .vertical
         stackView.spacing = 2
         stackView.alignment = .leading
-        stackView.distribution = .fillEqually
+        stackView.distribution = .equalSpacing
         backView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(greaterThanOrEqualTo: backView.topAnchor, constant: 20),
+            stackView.topAnchor.constraint(greaterThanOrEqualTo: backView.topAnchor, constant: 21),
             stackView.leadingAnchor.constraint(equalTo: ringProgressView.trailingAnchor, constant: 24),
             stackView.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(greaterThanOrEqualTo: backView.bottomAnchor, constant: -20),
+            stackView.bottomAnchor.constraint(greaterThanOrEqualTo: backView.bottomAnchor, constant: -21),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
@@ -141,14 +121,22 @@ class RecoveryHeaderView: CleanView {
         ])
     }
     
+    private func setupImageView() {
+        addSubview(circleInsideImage)
+        NSLayoutConstraint.activate([
+            circleInsideImage.widthAnchor.constraint(equalToConstant: 44),
+            circleInsideImage.heightAnchor.constraint(equalToConstant: 44),
+            circleInsideImage.centerYAnchor.constraint(equalTo: ringProgressView.centerYAnchor),
+            circleInsideImage.centerXAnchor.constraint(equalTo: ringProgressView.centerXAnchor),
+        ])
+    }
+    
     func configureHeader(data: HealthInfoDM?) {
         guard let data else { return }
-//        recoveryCircleView.progress = data.value/100
         percentLabel.text = "\(Int(data.value))%"
-//        recoveryCircleView.color = UIColor.calculated(for: data.value)
         
-        ringProgressView.startColor = .calculated(for: data.value)
         ringProgressView.endColor = .calculated(for: data.value)
+        ringProgressView.startColor = ringProgressView.endColor
         ringProgressView.progress = data.value/100
     }
 }

@@ -49,12 +49,12 @@ class IconLabel: CleanView {
         stack.spacing = 16
     }
     private let iconView = UIImageView().configured { image in
-        image.contentMode = .scaleToFill
+        image.contentMode = .scaleAspectFit
     }
     private let valueLabel = UILabel().configured { label in
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        label.textColor = ColorLibrary.white
+        label.textColor = .white
         label.textAlignment = .left
     }
 

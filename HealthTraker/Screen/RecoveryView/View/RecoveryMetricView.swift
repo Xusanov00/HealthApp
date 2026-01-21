@@ -25,19 +25,19 @@ final class RecoveryMetricView: CleanView {
     }
     private let leftIconLabel = IconLabel().configured { view in
         view.textFont = UIFont.systemFont(ofSize: 20, weight: .bold)
-        view.textColor = ColorLibrary.white
-        view.iconColor = ColorLibrary.white.withAlphaComponent(0.5)
+        view.textColor = .white
+        view.iconColor = .white.withAlphaComponent(0.5)
     }
     private let rightIconLabel = IconLabel().configured { view in
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textFont = UIFont.systemFont(ofSize: 16, weight: .bold)
-        view.textColor = ColorLibrary.white.withAlphaComponent(0.5)
-        view.iconColor = ColorLibrary.white.withAlphaComponent(0.5)
+        view.textColor = .white.withAlphaComponent(0.5)
+        view.iconColor = .white.withAlphaComponent(0.5)
     }
     private let subtitleLabel = UILabel().configured { label in
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = ColorLibrary.white.withAlphaComponent(0.5)
+        label.textColor = .white.withAlphaComponent(0.5)
         label.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -76,7 +76,7 @@ final class RecoveryMetricView: CleanView {
         
         if  calculateValues(model.data).current.value > calculateValues(model.data).previous.value {
             rightIconLabel.icon = "chevron_up"
-            rightIconLabel.iconColor = ColorLibrary.green
+            rightIconLabel.iconColor = ColorLibrary.lightGreen
         } else if  calculateValues(model.data).current.value < calculateValues(model.data).previous.value {
             rightIconLabel.icon = "chevron_down"
             rightIconLabel.iconColor = ColorLibrary.yellow

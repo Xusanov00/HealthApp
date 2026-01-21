@@ -14,7 +14,7 @@ class ActivityVC: UIViewController, RootViewProviding {
         return provider
     }()
     
-    private var viewModel = RecoveryViewModel()
+    private let viewModel = RecoveryViewModel()
 
     override func loadView() {
         view = ActivityRootView()

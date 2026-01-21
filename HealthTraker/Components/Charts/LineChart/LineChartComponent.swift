@@ -78,7 +78,7 @@ private extension LineChartComponent {
                 Circle()
                     .stroke(viewModel.lineColor, lineWidth: 2)
                     .frame(width: 10, height: 10)
-                    .background(ColorLibrary.gray1.color)
+                    .background(ColorLibrary.gray.color)
             }
         }
     }
@@ -98,7 +98,7 @@ private extension LineChartComponent {
                             .number.precision(.fractionLength(0...1))
                         )
                     )
-                    .foregroundStyle(ColorLibrary.white.color)
+                    .foregroundStyle(.white)
                     .font(.caption2)
                     .offset(y: -8)
                 }
@@ -110,30 +110,26 @@ private extension LineChartComponent {
 private extension LineChartComponent {
     var xAxis: some AxisContent {
         let lastDate = viewModel.data.last?.date
-
-        return AxisMarks(values: viewModel.data.map(\.date)) { value in
-            AxisValueLabel(verticalSpacing: 10) {
-                if
-                    let date = value.as(Date.self),
-                    let point = viewModel.animatedData.first(where: { $0.date == date })
-                {
+        
+        return AxisMarks(preset: .aligned, position: .bottom, values: viewModel.data.map(\.date)) { value in
+            AxisValueLabel() {
+                if let date = value.as(Date.self),
+                   let point = viewModel.animatedData.first(where: { $0.date == date }) {
                     Text(point.label)
                         .font(.caption2)
-                        .fixedSize()
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 8)
                         .padding(.vertical, 2)
                         .background(
                             date == lastDate
                             ? Color.white
-                            : Color.clear
+                            : .clear
                         )
                         .foregroundStyle(
                             date == lastDate
                             ? Color.black
-                            : ColorLibrary.white.withAlphaComponent(0.3).color
+                            : .white.opacity(0.3)
                         )
                         .clipShape(Capsule())
-                        .offset(x: -12)
                 }
             }
         }
@@ -148,8 +144,8 @@ private extension LineChartComponent {
                 AxisGridLine()
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? ColorLibrary.white.color
-                        : ColorLibrary.white.withAlphaComponent(0.2).color
+                        ? .white
+                        : .white.opacity(0.2)
                     )
 
                 AxisValueLabel(horizontalSpacing: 10) {
@@ -161,8 +157,8 @@ private extension LineChartComponent {
                     .font(.caption2)
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? ColorLibrary.white.color
-                        : ColorLibrary.white.withAlphaComponent(0.3).color
+                        ? .white
+                        : .white.opacity(0.3)
                     )
                 }
             }
