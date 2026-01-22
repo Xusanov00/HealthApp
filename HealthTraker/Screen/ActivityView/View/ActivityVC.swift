@@ -9,10 +9,9 @@ import UIKit
 
 class ActivityVC: UIViewController, RootViewProviding {
     typealias RootView = ActivityRootView
-    private lazy var dataProvider: ActivityDataProvider = {
-        let provider = ActivityDataProvider(collectionView: rootView.collectionView)
-        return provider
-    }()
+    private lazy var dataProvider = ActivityDataProvider(
+        collectionView: rootView.collectionView
+    )
     
     private let viewModel = RecoveryViewModel()
 

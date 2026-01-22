@@ -11,10 +11,9 @@ import UIKit
 class RecoveryVC: UIViewController, RootViewProviding {
     
     typealias RootView = RecoveryRootView
-    private lazy var dataProvider: RecoveryDataProvider = {
-        let provider = RecoveryDataProvider(tableView: rootView.tableView)
-        return provider
-    }()
+    private lazy var dataProvider = RecoveryDataProvider(
+        tableView: rootView.tableView
+    )
 
     private let viewModel = RecoveryViewModel()
     
@@ -26,7 +25,6 @@ class RecoveryVC: UIViewController, RootViewProviding {
         super.viewDidLoad()
         appearanceSettings()
     }
-    
 }
 
 extension RecoveryVC {
@@ -59,7 +57,6 @@ extension RecoveryVC: RecoveryDataProviderDelegate {
         dataProvider.breathData = viewModel.breathData
         dataProvider.sleepData = viewModel.sleepData
         dataProvider.selectedRange = viewModel.selectedRange
-        print(viewModel.vsrData.first?.value, "vc")
     }
 }
 

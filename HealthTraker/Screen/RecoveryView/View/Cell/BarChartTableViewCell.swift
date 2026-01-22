@@ -85,7 +85,6 @@ class BarChartTableViewCell: UITableViewCell {
         titleIconLabel.text = title
         chartViewModel.data = data
         chartViewModel.yValues = yValues
-        chartViewModel.markedValue = 68
         chartViewModel.showPointValues = true
         chartViewModel.isPercentage = true
     }

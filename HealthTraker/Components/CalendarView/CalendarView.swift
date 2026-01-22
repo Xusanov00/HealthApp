@@ -59,7 +59,6 @@ class CalendarView: CleanView {
             let count = self.calendarCollectionView.numberOfItems(inSection: 0)
             guard count > 0 else { return }
 
-            // 1. Скроллим к последнему
             let lastIndexPath = IndexPath(item: count - 1, section: 0)
             self.calendarCollectionView.scrollToItem(
                 at: lastIndexPath,
@@ -67,7 +66,6 @@ class CalendarView: CleanView {
                 animated: animated
             )
 
-            // 2. Ищем сегодняшний день
             if let todayIndex = self.dateArray.firstIndex(where: { $0.date.isToday }) {
                 let todayIndexPath = IndexPath(item: todayIndex, section: 0)
 

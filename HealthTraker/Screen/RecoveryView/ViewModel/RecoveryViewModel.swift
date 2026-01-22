@@ -27,7 +27,6 @@ class RecoveryViewModel {
         recoverySelectedData = Mocks.recoveryData(
             range: .day
         ).filter { date == $0.date }.first
-        print(recoverySelectedData?.value, "viewModel")
     }
     
     func rangeChanged(range: ChartRange) {
@@ -37,6 +36,5 @@ class RecoveryViewModel {
         vsrData = Mocks.vsrData(range: selectedRange)
         breathData = Mocks.breathData(range: selectedRange)
         sleepData = Mocks.sleepData(range: selectedRange)
-        print(recoveryData.first?.value, "viewModel")
     }
 }
