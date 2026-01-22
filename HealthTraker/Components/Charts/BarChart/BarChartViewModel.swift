@@ -17,7 +17,7 @@ extension BarChartViewModel {
 final class BarChartViewModel: ObservableObject {
     // MARK: - Setters
     @Published var animatedData: [ChartAnimatedDM] = []
-    @Published var markedLineValue: Double = 0
+    @Published var markedValue: Double = 0
     @Published var isPercentage = false
     @Published var data: [HealthInfoDM] = [] {
         didSet {
@@ -37,6 +37,37 @@ final class BarChartViewModel: ObservableObject {
         barType == .mono ? 10 : 15
     }
     private var yRange: ClosedRange<Double> = 0...1
+    var filteredYValues: [Double] {
+        var values = yValues
+
+        if markedValue != 0, !values.contains(markedValue) {
+            values.append(markedValue)
+        }
+
+        return values.filter {
+            $0 == markedValue || abs($0 - markedValue) > 7
+        }.sorted()
+    }
+}
+
+// MARK: - Padding from left and right of Bars
+extension BarChartViewModel {
+    var xDomain: ClosedRange<Date> {
+        guard
+            let first = data.first?.date,
+            let last  = data.last?.date
+        else {
+            let now = Date()
+            return now...now
+        }
+        
+        let step = data[1].date.timeIntervalSince(data[0].date)
+        let padding: TimeInterval = step * 0.3
+        
+        return first.addingTimeInterval(-padding)
+        ...
+        last.addingTimeInterval(padding)
+    }
 }
 
 // MARK: - Getter funcs
@@ -57,25 +88,6 @@ extension BarChartViewModel {
     }
 }
 
-// MARK: - Padding from left and right of Bars
-extension BarChartViewModel {
-    var xDomain: ClosedRange<Date> {
-        guard
-            let first = data.first?.date,
-            let last  = data.last?.date
-        else {
-            let now = Date()
-            return now...now
-        }
-
-        let step = data[1].date.timeIntervalSince(data[0].date)
-        let padding: TimeInterval = step * 0.3
-
-        return first.addingTimeInterval(-padding)
-            ...
-            last.addingTimeInterval(padding)
-    }
-}
 
 // MARK: - Chart mapper for animated model
 extension BarChartViewModel {
@@ -112,6 +124,6 @@ extension BarChartViewModel {
         else {
             return false
         }
-        return value == markedLineValue
+        return value == markedValue
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-protocol RecoveryRootViewDelegate {
+protocol RecoveryRootViewDelegate: AnyObject {
     func dismissTapped()
 }
 
@@ -37,7 +37,7 @@ class RecoveryRootView: CleanView {
     }
     weak var tableView: UITableView!
 
-    var delegate: RecoveryRootViewDelegate?
+    weak var delegate: RecoveryRootViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -90,7 +90,7 @@ class RecoveryRootView: CleanView {
         addSubview(closeButton)
         NSLayoutConstraint.activate([
             closeButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
-            closeButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
+            closeButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             closeButton.heightAnchor.constraint(equalToConstant: 44),
             closeButton.widthAnchor.constraint(equalToConstant: 44),
         ])

@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol ActivityDataProviderDelegate {
+protocol ActivityDataProviderDelegate: AnyObject {
     func recoveryTapped()
 }
 
-final class ActivityDataProvider: NSObject{
+final class ActivityDataProvider: NSObject {
     var onDateSelected: ((Date) -> Void)?
     var onRangeChanged: ((ChartRange) -> Void)?
     
@@ -20,7 +20,7 @@ final class ActivityDataProvider: NSObject{
             collectionView.reloadData()
         }
     }
-    var delegate: ActivityDataProviderDelegate?
+    weak var delegate: ActivityDataProviderDelegate?
     
     private let collectionView: UICollectionView
     

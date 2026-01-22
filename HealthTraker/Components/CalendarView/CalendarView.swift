@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol CalendarViewDelegate {
+protocol CalendarViewDelegate: AnyObject {
     func dateChanged(date: Date)
 }
 
@@ -15,15 +15,16 @@ class CalendarView: CleanView {
     private weak var calendarCollectionView: UICollectionView!
     var dateArray: [HealthInfoDM] = [] {
         didSet {
-            scrollToLastItem()
+            scrollToLastAndSelectToday()
         }
     }
+    private var currentDate: Date?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCollectionView()
     }
-    var delegate: CalendarViewDelegate?
+    weak var delegate: CalendarViewDelegate?
     
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
@@ -53,24 +54,29 @@ class CalendarView: CleanView {
         self.calendarCollectionView = collectionView
     }
     
-    private func scrollToLastItem(animated: Bool = false) {
+    private func scrollToLastAndSelectToday(animated: Bool = false) {
         DispatchQueue.main.async {
-            let lastIndex = self.calendarCollectionView.numberOfItems(inSection: 0) - 1
-            guard lastIndex >= 0 else { return }
+            let count = self.calendarCollectionView.numberOfItems(inSection: 0)
+            guard count > 0 else { return }
 
-            let indexPath = IndexPath(item: lastIndex, section: 0)
-
-            self.calendarCollectionView.selectItem(
-                at: indexPath,
-                animated: false,
-                scrollPosition: .right
-            )
-
+            // 1. Скроллим к последнему
+            let lastIndexPath = IndexPath(item: count - 1, section: 0)
             self.calendarCollectionView.scrollToItem(
-                at: indexPath,
+                at: lastIndexPath,
                 at: .right,
                 animated: animated
             )
+
+            // 2. Ищем сегодняшний день
+            if let todayIndex = self.dateArray.firstIndex(where: { $0.date.isToday }) {
+                let todayIndexPath = IndexPath(item: todayIndex, section: 0)
+
+                self.calendarCollectionView.selectItem(
+                    at: todayIndexPath,
+                    animated: false,
+                    scrollPosition: []
+                )
+            }
         }
     }
 }
@@ -87,7 +93,7 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
         ) as? CalendarDayCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configureCell(isFutureDay: false, data: dateArray[indexPath.row]) // TODO: Need to mark future days
+        cell.configureCell(data: dateArray[indexPath.row])
         return cell
     }
 
@@ -95,10 +101,13 @@ extension CalendarView: UICollectionViewDelegate, UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         shouldSelectItemAt indexPath: IndexPath
     ) -> Bool {
-        return true // TODO: Need to ban future days selection
+        return !dateArray[indexPath.row].date.isFuture
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.dateChanged(date: dateArray[indexPath.row].date)
+        if dateArray[indexPath.row].date.isToday {
+            scrollToLastAndSelectToday(animated: true)
+        }
     }
 }

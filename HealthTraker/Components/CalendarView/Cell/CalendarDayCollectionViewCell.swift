@@ -102,8 +102,8 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
         ])
     }
 
-    func configureCell(isFutureDay: Bool = false, data: HealthInfoDM) {
-        self.isFutureDay = isFutureDay
+    func configureCell(data: HealthInfoDM) {
+        self.isFutureDay = data.date.isFuture
         formatter.dateFormat = "dd"
         dayLabel.text = formatter.string(from: data.date)
         circleProgressView.progressColor = UIColor.calculated(for: data.value)

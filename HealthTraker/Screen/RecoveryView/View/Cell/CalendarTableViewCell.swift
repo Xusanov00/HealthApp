@@ -7,13 +7,13 @@
 
 import UIKit
 
-protocol CalendarTableViewCellDelegate {
+protocol CalendarTableViewCellDelegate: AnyObject {
     func dateChanged(date: Date)
 }
 
 class CalendarTableViewCell: UITableViewCell {
     private lazy var calendarView = CalendarView()
-    var delegate: CalendarTableViewCellDelegate?
+    weak var delegate: CalendarTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

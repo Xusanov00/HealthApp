@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol RecoveryDataProviderDelegate {
+protocol RecoveryDataProviderDelegate: AnyObject {
     func dateChanged(date: Date)
     func rangeChanged(range: ChartRange)
 }
@@ -50,7 +50,7 @@ final class RecoveryDataProvider: NSObject, UITableViewDataSource, UITableViewDe
         }
     }
     
-    var delegate: RecoveryDataProviderDelegate?
+    weak var delegate: RecoveryDataProviderDelegate?
     private weak var recoveryHeaderView: RecoveryHeaderView?
     private let tableView: UITableView
 

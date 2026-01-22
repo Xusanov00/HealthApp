@@ -14,6 +14,12 @@ struct HealthInfoDM: Identifiable {
     let label: String
 }
 
+extension HealthInfoDM {
+    var isToday: Bool {
+        Calendar.current.isDateInToday(date)
+    }
+}
+
 struct ChartAnimatedDM: Identifiable, Equatable {
     let id: UUID
     let date: Date

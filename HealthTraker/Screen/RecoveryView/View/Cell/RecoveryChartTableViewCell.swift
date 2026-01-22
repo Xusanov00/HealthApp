@@ -177,7 +177,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
         chartViewModel.data = data
         chartViewModel.yValues = yValues
         chartViewModel.barType = .colorful
-        chartViewModel.markedLineValue = 70
+        chartViewModel.markedValue = 75
         chartViewModel.isPercentage = true
     }
 

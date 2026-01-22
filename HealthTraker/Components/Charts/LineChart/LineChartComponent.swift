@@ -144,7 +144,7 @@ private extension LineChartComponent {
                 AxisGridLine()
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? .white
+                        ? .clear
                         : .white.opacity(0.2)
                     )
 

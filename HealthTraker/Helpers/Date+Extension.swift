@@ -13,3 +13,20 @@ extension Date {
         return Calendar.current.date(from: components)!
     }
 }
+
+extension Date {
+    init(milliseconds: Int64) {
+        self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
+    }
+    
+    var isToday: Bool {
+        Calendar.current.isDateInToday(self)
+    }
+    
+    var isFuture: Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let target = calendar.startOfDay(for: self)
+        return target > today
+    }
+}

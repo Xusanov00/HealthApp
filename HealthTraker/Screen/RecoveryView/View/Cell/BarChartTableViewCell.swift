@@ -71,7 +71,7 @@ class BarChartTableViewCell: UITableViewCell {
             hostingBarChart.view.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
             hostingBarChart.view.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
             hostingBarChart.view.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
-            hostingBarChart.view.heightAnchor.constraint(equalToConstant: 300)
+            hostingBarChart.view.heightAnchor.constraint(equalToConstant: 280)
         ])
     }
     
@@ -85,6 +85,7 @@ class BarChartTableViewCell: UITableViewCell {
         titleIconLabel.text = title
         chartViewModel.data = data
         chartViewModel.yValues = yValues
+        chartViewModel.markedValue = 68
         chartViewModel.showPointValues = true
         chartViewModel.isPercentage = true
     }

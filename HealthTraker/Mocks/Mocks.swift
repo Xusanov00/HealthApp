@@ -12,13 +12,18 @@ struct Mocks {
         switch range {
         case .day:
             [
-                .init(date: date("2023-09-04"), value: 100, label: "Mon"),
-                .init(date: date("2023-09-05"), value: 53, label: "Tue"),
-                .init(date: date("2023-09-06"), value: 62, label: "Wed"),
-                .init(date: date("2023-09-07"), value: 22, label: "Thu"),
-                .init(date: date("2023-09-08"), value: 19, label: "Fri"),
-                .init(date: date("2023-09-09"), value: 53, label: "Sat"),
-                .init(date: date("2023-09-10"), value: 30, label: "Sun")
+                .init(date: date("2026-01-14"), value: 100, label: "Mon"),
+                .init(date: date("2026-01-15"), value: 53, label: "Tue"),
+                .init(date: date("2026-01-16"), value: 62, label: "Wed"),
+                .init(date: date("2026-01-17"), value: 22, label: "Thu"),
+                .init(date: date("2026-01-18"), value: 19, label: "Fri"),
+                .init(date: date("2026-01-19"), value: 53, label: "Sat"),
+                .init(date: date("2026-01-20"), value: 30, label: "Sun"),
+                .init(date: date("2026-01-21"), value: 100, label: "Mon"),
+                .init(date: date("2026-01-22"), value: 53, label: "Tue"),
+                .init(date: date("2026-01-23"), value: 62, label: "Wed"),
+                .init(date: date("2026-01-24"), value: 22, label: "Thu"),
+                .init(date: date("2026-01-25"), value: 19, label: "Fri"),
             ]
         case .week:
             [

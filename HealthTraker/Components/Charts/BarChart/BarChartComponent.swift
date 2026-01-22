@@ -17,7 +17,7 @@ struct BarChartComponent: View {
             if viewModel.showPointValues {
                 valueAnnotations
             }
-            if viewModel.markedLineValue > 0 {
+            if viewModel.markedValue > 0 {
                 markedLine
             }
             barMarks
@@ -64,7 +64,7 @@ private extension BarChartComponent {
 private extension BarChartComponent {
     var markedLine: some ChartContent {
         RuleMark(
-            y: .value("line value", viewModel.markedLineValue)
+            y: .value("line value", viewModel.markedValue)
         )
         .lineStyle(
             StrokeStyle(lineWidth: 1, dash: [6, 4])
@@ -127,12 +127,12 @@ private extension BarChartComponent {
 // MARK: - Y Axis
 private extension BarChartComponent {
     var yAxis: some AxisContent {
-        AxisMarks(position: .trailing, values: viewModel.yValues) { axisValue in
+        AxisMarks(position: .trailing, values: viewModel.filteredYValues) { axisValue in
             if let value = axisValue.as(Double.self) {
                 AxisGridLine()
                     .foregroundStyle(
                         viewModel.isMarkedValue(value)
-                        ? .white
+                        ? .clear
                         : .white.opacity(0.2)
                     )
 
