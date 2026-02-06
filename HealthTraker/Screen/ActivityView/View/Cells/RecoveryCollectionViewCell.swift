@@ -9,7 +9,7 @@ import UIKit
 
 class RecoveryCollectionViewCell: UICollectionViewCell {
     private let titleIconLabel = IconLabel().configured { view in
-        view.textFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        view.textFont = UIFont.montserrat(ofSize: 16, weight: .semibold)
         view.textColor = .white
         view.text = "Восстановление"
         view.icon = "recovery_ic"
@@ -37,13 +37,13 @@ class RecoveryCollectionViewCell: UICollectionViewCell {
         ring.translatesAutoresizingMaskIntoConstraints = false
     }
     private let ringProgressLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.font = .montserrat(ofSize: 32, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
         label.textColor = .white
     }
     private let ringSubtitleLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.font = .montserrat(ofSize: 12, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
         label.textColor = .white
@@ -159,8 +159,8 @@ class RecoveryCollectionViewCell: UICollectionViewCell {
 extension RecoveryCollectionViewCell {
     func makePercentText(
         value: Int,
-        valueFont: UIFont = .systemFont(ofSize: 32, weight: .bold),
-        percentFont: UIFont = .systemFont(ofSize: 20, weight: .bold),
+        valueFont: UIFont = .montserrat(ofSize: 32, weight: .bold),
+        percentFont: UIFont = .montserrat(ofSize: 20, weight: .bold),
         color: UIColor = .white
     ) -> NSAttributedString {
 

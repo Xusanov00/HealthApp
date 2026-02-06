@@ -27,13 +27,13 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let dayLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.font = .montserrat(ofSize: 14, weight: .bold)
         label.textAlignment = .center
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
     }
     private let weekdayLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.font = .montserrat(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -66,7 +66,11 @@ class CalendarDayCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            updateSelection(animated: true)
+            if #available(iOS 26.0, *) {
+                glassButton.alpha = isSelected ? 1 : 0
+            } else {
+                glassView.alpha = isSelected ? 0.7 : 0
+            }
         }
     }
 
@@ -144,7 +148,7 @@ extension CalendarDayCollectionViewCell {
         }
     }
 
-    private func updateSelection(animated: Bool) {
+    private func updateSelectionAppearance(animated: Bool) {
         let changes = {
             if #available(iOS 26.0, *) {
                 self.glassButton.alpha = self.isSelected ? 1 : 0
@@ -162,7 +166,7 @@ extension CalendarDayCollectionViewCell {
         super.prepareForReuse()
         if #available(iOS 26.0, *) {
             glassButton.alpha = 0
-        }else {
+        } else {
             glassView.alpha = 0
         }
     }

@@ -8,7 +8,9 @@
 import UIKit
 
 protocol ActivityDataProviderDelegate: AnyObject {
+    func sleepTapped()
     func recoveryTapped()
+    func strainTapped()
 }
 
 final class ActivityDataProvider: NSObject {
@@ -16,6 +18,11 @@ final class ActivityDataProvider: NSObject {
     var onRangeChanged: ((ChartRange) -> Void)?
     
     var recoveryData: [HealthInfoDM] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+    var sleepData: [HealthInfoDM] = [] {
         didSet {
             collectionView.reloadData()
         }
@@ -30,26 +37,35 @@ final class ActivityDataProvider: NSObject {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.allowsMultipleSelection = false
+        collectionView.register(SleepCollectionViewCell.self, forCellWithReuseIdentifier: SleepCollectionViewCell.string)
         collectionView.register(RecoveryCollectionViewCell.self, forCellWithReuseIdentifier: RecoveryCollectionViewCell.string)
         collectionView.register(StrainCollectionViewCell.self, forCellWithReuseIdentifier: StrainCollectionViewCell.string)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: UICollectionViewCell.string)
     }
 }
 
 extension ActivityDataProvider: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        2
+        3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.row {
         case 0:
             guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: SleepCollectionViewCell.string,
+                for: indexPath
+            ) as? SleepCollectionViewCell else { return UICollectionViewCell() }
+            cell.configureCell(data: sleepData)
+            return cell
+        case 1:
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: RecoveryCollectionViewCell.string,
                 for: indexPath
             ) as? RecoveryCollectionViewCell else { return UICollectionViewCell() }
             cell.configureCell(data: self.recoveryData.last!)
             return cell
-        case 1:
+        case 2:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: StrainCollectionViewCell.string,
                 for: indexPath
@@ -57,13 +73,16 @@ extension ActivityDataProvider: UICollectionViewDelegate, UICollectionViewDataSo
             cell.configureCell(data: self.recoveryData.last!)
             return cell
         default:
-            return UICollectionViewCell()
+            return collectionView.dequeueReusableCell(withReuseIdentifier: UICollectionViewCell.string, for: indexPath)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            delegate?.recoveryTapped()
+        switch indexPath.row {
+        case 0: delegate?.sleepTapped()
+        case 1: delegate?.recoveryTapped()
+        case 2: delegate?.strainTapped()
+        default: break
         }
     }
 }
@@ -74,6 +93,13 @@ extension ActivityDataProvider: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: (UIScreen.main.bounds.width - 26) / 2, height: 200)
+        switch indexPath.row {
+        case 0:
+            CGSize(width: (UIScreen.main.bounds.width - 26), height: 160)
+        case 1, 2:
+            CGSize(width: (UIScreen.main.bounds.width - 26) / 2, height: 200)
+        default:
+            CGSize(width: 0, height: 0)
+        }
     }
 }

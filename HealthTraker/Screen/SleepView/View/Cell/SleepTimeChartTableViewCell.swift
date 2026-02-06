@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 
-class BarChartTableViewCell: UITableViewCell {
+class SleepTimeChartTableViewCell: UITableViewCell {
     @Published private var recoveryData: [HealthInfoDM] = []
     private let chartViewModel = BarChartViewModel()
     private let backView = UIView().configured { view in

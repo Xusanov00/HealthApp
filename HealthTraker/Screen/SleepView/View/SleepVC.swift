@@ -1,5 +1,5 @@
 //
-//  RecoveryVC.swift
+//  SleepVC.swift
 //  HealthTraker
 //
 //  Created by Ali on 21/12/2025.
@@ -8,17 +8,17 @@
 
 import UIKit
 
-class RecoveryVC: UIViewController, RootViewProviding {
+class SleepVC: UIViewController, RootViewProviding {
     
-    typealias RootView = RecoveryRootView
-    private lazy var dataProvider = RecoveryDataProvider(
+    typealias RootView = SleepRootView
+    private lazy var dataProvider = SleepDataProvider(
         tableView: rootView.tableView
     )
 
-    private let viewModel = RecoveryViewModel()
+    private let viewModel = SleepViewModel()
     
     override func loadView() {
-        view = RecoveryRootView()
+        view = SleepRootView()
     }
     
     override func viewDidLoad() {
@@ -27,33 +27,33 @@ class RecoveryVC: UIViewController, RootViewProviding {
     }
 }
 
-extension RecoveryVC {
+extension SleepVC {
     private func appearanceSettings() {
         rootView.delegate = self
         dataProvider.delegate = self
-        dataProvider.calendarRecoveryData = viewModel.calendarRecoveryData
-        dataProvider.recoveryData = viewModel.recoveryData
+        dataProvider.calendarSleepData = viewModel.calendarRecoveryData
+        dataProvider.sleepData = viewModel.sleepData
         dataProvider.pulseData = viewModel.pulseData
         dataProvider.vsrData = viewModel.vsrData
         dataProvider.breathData = viewModel.breathData
         dataProvider.sleepData = viewModel.sleepData
-        dataProvider.recoverySelectedData = viewModel.recoverySelectedData
+        dataProvider.sleepSelectedData = viewModel.recoverySelectedData
         dataProvider.selectedRange = viewModel.selectedRange
         dataProvider.selectedDate = viewModel.selectedDate
     }
 }
 
-// MARK: - RecoveryDataProviderDelegate
-extension RecoveryVC: RecoveryDataProviderDelegate {
+// MARK: - SleepDataProviderDelegate
+extension SleepVC: SleepDataProviderDelegate {
     func dateChanged(date: Date) {
         viewModel.dateChanged(date: date)
         dataProvider.selectedDate = viewModel.selectedDate
-        dataProvider.recoverySelectedData = viewModel.recoverySelectedData
+        dataProvider.sleepSelectedData = viewModel.recoverySelectedData
     }
     
     func rangeChanged(range: ChartRange) {
         viewModel.rangeChanged(range: range)
-        dataProvider.recoveryData = viewModel.recoveryData
+        dataProvider.sleepData = viewModel.sleepData
         dataProvider.pulseData = viewModel.pulseData
         dataProvider.vsrData = viewModel.vsrData
         dataProvider.breathData = viewModel.breathData
@@ -62,8 +62,8 @@ extension RecoveryVC: RecoveryDataProviderDelegate {
     }
 }
 
-// MARK: - RecoveryRootViewDelegate
-extension RecoveryVC: RecoveryRootViewDelegate {
+// MARK: - SleepRootViewDelegate
+extension SleepVC: SleepRootViewDelegate {
     func dismissTapped() {
         self.dismiss(animated: true)
     }

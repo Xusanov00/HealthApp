@@ -9,7 +9,7 @@ import UIKit
 
 class StrainCollectionViewCell: UICollectionViewCell {
     private let titleIconLabel = IconLabel().configured { view in
-        view.textFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        view.textFont = .montserrat(ofSize: 16, weight: .semibold)
         view.textColor = .white
         view.text = "Strain"
         view.icon = "strain_ic"
@@ -24,7 +24,7 @@ class StrainCollectionViewCell: UICollectionViewCell {
         circle.lineWidth = 10
         circle.progress = 0
         circle.trackColor = .white.withAlphaComponent(0.1)
-        circle.trackStyle = .dashed
+        circle.trackStyle = .solid
         circle.dashLength = 1.25
         circle.dashSpacing = 2.5
         circle.translatesAutoresizingMaskIntoConstraints = false
@@ -37,13 +37,13 @@ class StrainCollectionViewCell: UICollectionViewCell {
         ring.translatesAutoresizingMaskIntoConstraints = false
     }
     private let ringProgressLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.font = .montserrat(ofSize: 32, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
         label.textColor = .white
     }
     private let ringSubtitleLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.font = .montserrat(ofSize: 12, weight: .bold)
         label.textAlignment = .center
         label.numberOfLines = 1
         label.textColor = .white

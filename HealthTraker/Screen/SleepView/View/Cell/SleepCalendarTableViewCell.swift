@@ -7,13 +7,13 @@
 
 import UIKit
 
-protocol CalendarTableViewCellDelegate: AnyObject {
+protocol SleepCalendarTableViewCellDelegate: AnyObject {
     func dateChanged(date: Date)
 }
 
-class CalendarTableViewCell: UITableViewCell {
+class SleepCalendarTableViewCell: UITableViewCell {
     private lazy var calendarView = CalendarView()
-    weak var delegate: CalendarTableViewCellDelegate?
+    weak var delegate: SleepCalendarTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -51,7 +51,7 @@ class CalendarTableViewCell: UITableViewCell {
 }
 
 // MARK: - Calendar day changed
-extension CalendarTableViewCell: CalendarViewDelegate {
+extension SleepCalendarTableViewCell: CalendarViewDelegate {
     func dateChanged(date: Date) {
         delegate?.dateChanged(date: date)
     }

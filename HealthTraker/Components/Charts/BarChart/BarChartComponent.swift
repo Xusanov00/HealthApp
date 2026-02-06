@@ -84,7 +84,10 @@ private extension BarChartComponent {
             .foregroundStyle(.clear)
             .annotation(position: .top) {
                 Text(
+                    item.animatedValue != 0 ?
                     item.animatedValue.valueFormatter(inPercent: viewModel.isPercentage)
+                    : ""
+                    
                 )
                 .font(.caption2)
                 .offset(y: -8)
@@ -152,18 +155,4 @@ private extension BarChartComponent {
             }
         }
     }
-}
-
-#Preview("Narrow Range · 12–16") {
-    let viewmodel = BarChartViewModel()
-    viewmodel.data = Mocks.recoveryData(range: .week)
-    viewmodel.barType = .colorful
-    viewmodel.showPointValues = false
-    viewmodel.yValues = [0,20,40,60,80,100]
-    
-    return BarChartComponent(
-        viewModel: viewmodel
-    )
-    .padding()
-    .background(.clear)
 }

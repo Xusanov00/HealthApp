@@ -1,13 +1,13 @@
 //
-//  RecoveryHeaderView.swift
+//  SleepHeaderView.swift
 //  HealthTraker
 //
-//  Created by User on 19/01/26.
+//  Created by User on 04/02/26.
 //
 
 import UIKit
 
-class RecoveryHeaderView: CleanView {
+class SleepHeaderView: CleanView {
     private let backView = UIView().configured { view in
         view.layer.cornerRadius = 22
         view.clipsToBounds = true
@@ -30,7 +30,7 @@ class RecoveryHeaderView: CleanView {
     }
     private let gradientLayer = CAGradientLayer()
     private let percentLabel = UILabel().configured { label in
-        label.font = .systemFont(ofSize: 56, weight: .bold)
+        label.font = .montserrat(ofSize: 56, weight: .bold)
         label.numberOfLines = 1
         label.textColor = .white
     }

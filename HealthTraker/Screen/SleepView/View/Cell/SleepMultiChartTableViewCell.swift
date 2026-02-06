@@ -1,5 +1,5 @@
 //
-//  RecoveryChartTableViewCell.swift
+//  SleepMultiChartTableViewCell.swift
 //  HealthTraker
 //
 //  Created by Ali on 21/12/2025.
@@ -8,11 +8,11 @@
 import UIKit
 import SwiftUI
 
-protocol RecoveryChartTableViewCellDelegate {
+protocol SleepMultiChartTableViewCellDelegate {
     func rangeChanged(range: ChartRange)
 }
 
-final class RecoveryChartTableViewCell: UITableViewCell {
+final class SleepMultiChartTableViewCell: UITableViewCell {
     private let chartViewModel = BarChartViewModel()
 
     // MARK: - UI
@@ -52,17 +52,17 @@ final class RecoveryChartTableViewCell: UITableViewCell {
         $0.alignment = .fill
     }
 
-    private let hrvView = RecoveryMetricView()
-    private let pulseView = RecoveryMetricView()
-    private let breathView = RecoveryMetricView()
-    private let sleepView = RecoveryMetricView()
+    private let hrvView = SleepMetricView()
+    private let pulseView = SleepMetricView()
+    private let breathView = SleepMetricView()
+    private let sleepView = SleepMetricView()
 
     // MARK: - State day/week/month
     private var selectedRange: ChartRange? {
         didSet { updateButtonsUI() }
     }
     
-    var delegate: RecoveryChartTableViewCellDelegate?
+    var delegate: SleepMultiChartTableViewCellDelegate?
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -181,7 +181,7 @@ final class RecoveryChartTableViewCell: UITableViewCell {
         chartViewModel.isPercentage = true
     }
 
-    func configureMetrics(_ metrics: [RecoveryMetric]) {
+    func configureMetrics(_ metrics: [SleepMetric]) {
         hrvView.configureView(metrics[0])
         pulseView.configureView(metrics[1])
         breathView.configureView(metrics[2])

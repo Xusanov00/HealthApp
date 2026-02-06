@@ -111,10 +111,12 @@ private extension LineChartComponent {
     var xAxis: some AxisContent {
         let lastDate = viewModel.data.last?.date
         
+        // Используем ВСЕ данные для меток оси X
         return AxisMarks(preset: .aligned, position: .bottom, values: viewModel.data.map(\.date)) { value in
             AxisValueLabel() {
                 if let date = value.as(Date.self),
-                   let point = viewModel.animatedData.first(where: { $0.date == date }) {
+                   // Ищем в data (все данные), а не в animatedData (только ненулевые)
+                   let point = viewModel.data.first(where: { $0.date == date }) {
                     Text(point.label)
                         .font(.caption2)
                         .padding(.horizontal, 8)
@@ -164,15 +166,4 @@ private extension LineChartComponent {
             }
         }
     }
-}
-
-#Preview("Narrow Range · 12–16") {
-    let viewmodel = LineChartViewModel()
-    viewmodel.data = Mocks.vsrData(range: .week)
-    viewmodel.yValues = [20,30,40,50,60]
-    viewmodel.showPointValues = true
-    
-    return LineChartComponent(viewModel: viewmodel)
-    .padding()
-    .background(.clear)
 }

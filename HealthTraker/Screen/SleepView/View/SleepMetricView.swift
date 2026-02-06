@@ -1,5 +1,5 @@
 //
-//  RecoveryMetricView.swift
+//  SleepMetricView.swift
 //  HealthTraker
 //
 //  Created by User on 19/01/26.
@@ -7,15 +7,15 @@
 
 import UIKit
 
-// MARK: - Recovery Daily Metric view
-struct RecoveryMetric {
+// MARK: - Sleep Daily Metric view
+struct SleepMetric {
     let data: [HealthInfoDM]
     let icon: String
     let subtitle: String
     var inPercent: Bool = false
 }
 
-final class RecoveryMetricView: CleanView {
+final class SleepMetricView: CleanView {
     // UI
     let stackView = UIStackView().configured { stack in
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +30,6 @@ final class RecoveryMetricView: CleanView {
     }
     private let rightIconLabel = IconLabel().configured { view in
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.spacing = 8
         view.textFont = .montserrat(ofSize: 16, weight: .bold)
         view.textColor = .white.withAlphaComponent(0.5)
         view.iconColor = .white.withAlphaComponent(0.5)
@@ -41,6 +40,7 @@ final class RecoveryMetricView: CleanView {
         label.textColor = .white.withAlphaComponent(0.5)
         label.translatesAutoresizingMaskIntoConstraints = false
     }
+    
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -67,7 +67,7 @@ final class RecoveryMetricView: CleanView {
         ])
     }
 
-    func configureView(_ model: RecoveryMetric) {
+    func configureView(_ model: SleepMetric) {
         leftIconLabel.icon = model.icon
         subtitleLabel.text = model.subtitle
         

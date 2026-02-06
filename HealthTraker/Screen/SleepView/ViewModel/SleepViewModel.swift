@@ -1,5 +1,5 @@
 //
-//  RecoveryViewModel.swift
+//  SleepViewModel.swift
 //  HealthTraker
 //
 //  Created by Ali on 20/12/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RecoveryViewModel {
+class SleepViewModel {
     var selectedRange: ChartRange = .day
     var selectedDate: Date = Date()
     

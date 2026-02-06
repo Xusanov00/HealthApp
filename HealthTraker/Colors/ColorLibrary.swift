@@ -17,4 +17,6 @@ class ColorLibrary {
     static let teal: UIColor = UIColor(hex: "#24FFFE")
     static let gradientLeft: UIColor = #colorLiteral(red: 0.02745098039, green: 0.2, blue: 0.2, alpha: 1)
     static let gradientRight: UIColor = #colorLiteral(red: 0, green: 0.1019896194, blue: 0.1999958456, alpha: 1)
+    static let blue: UIColor = UIColor(hex: "#0080FF")
+    static let orange: UIColor = UIColor(hex: "#FF8E00")
 }

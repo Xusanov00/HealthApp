@@ -17,7 +17,7 @@ class LineChartTableViewCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let titleIconLabel = IconLabel().configured { view in
-        view.textFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        view.textFont = .montserrat(ofSize: 16, weight: .semibold)
         view.textColor = .white
         view.iconColor = .white.withAlphaComponent(0.5)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -74,11 +74,10 @@ class LineChartTableViewCell: UITableViewCell {
         ])
     }
     
-    func configureCell(icon: String, title: String, yValues: [Double], data: [HealthInfoDM]) {
+    func configureCell(icon: String, title: String, data: [HealthInfoDM]) {
         titleIconLabel.icon = icon
         titleIconLabel.text = title
         chartViewModel.data = data
-        chartViewModel.yValues = yValues
         chartViewModel.showPointValues = true
     }
 }

@@ -39,6 +39,11 @@ class IconLabel: CleanView {
             valueLabel.textColor = textColor
         }
     }
+    var spacing: CGFloat = 16 {
+        didSet {
+            stackView.spacing = spacing
+        }
+    }
     
     // UI
     private let stackView = UIStackView().configured { stack in
@@ -53,7 +58,7 @@ class IconLabel: CleanView {
     }
     private let valueLabel = UILabel().configured { label in
         label.numberOfLines = 1
-        label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        label.font = .montserrat(ofSize: 20, weight: .bold)
         label.textColor = .white
         label.textAlignment = .left
     }

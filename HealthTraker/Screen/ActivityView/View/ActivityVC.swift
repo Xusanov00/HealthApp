@@ -30,13 +30,26 @@ extension ActivityVC {
     private func appearanceSettings() {
         dataProvider.delegate = self
         dataProvider.recoveryData = viewModel.recoveryData
+        dataProvider.sleepData = viewModel.sleepData
     }
 }
 
 // MARK: - ActivityDataProviderDelegate
 extension ActivityVC: ActivityDataProviderDelegate {
+    func sleepTapped() {
+        let recoveryVC = SleepVC()
+        recoveryVC.modalPresentationStyle = .fullScreen
+        present(recoveryVC, animated: true)
+    }
+    
     func recoveryTapped() {
         let recoveryVC = RecoveryVC()
+        recoveryVC.modalPresentationStyle = .fullScreen
+        present(recoveryVC, animated: true)
+    }
+    
+    func strainTapped() {
+        let recoveryVC = StrainVC()
         recoveryVC.modalPresentationStyle = .fullScreen
         present(recoveryVC, animated: true)
     }

@@ -24,11 +24,21 @@ final class CircleProgressView: UIView {
     }
 
     var progressColor: UIColor = .systemTeal {
-        didSet { progressLayer.strokeColor = progressColor.cgColor }
+        didSet {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            progressLayer.strokeColor = progressColor.cgColor
+            CATransaction.commit()
+        }
     }
 
     var trackColor: UIColor = UIColor.white.withAlphaComponent(0.1) {
-        didSet { trackLayer.strokeColor = trackColor.cgColor }
+        didSet {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            trackLayer.strokeColor = trackColor.cgColor
+            CATransaction.commit()
+        }
     }
 
     var trackStyle: TrackStyle = .dashed {
@@ -95,18 +105,25 @@ final class CircleProgressView: UIView {
             clockwise: true
         )
 
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        
         [trackLayer, progressLayer].forEach {
             $0.frame = bounds
             $0.path = path.cgPath
             $0.lineWidth = lineWidth
         }
+        
+        CATransaction.commit()
 
         updateProgress()
     }
 
     private func updateProgress() {
-        let clamped = max(0, min(progress, 1))
-        progressLayer.strokeEnd = clamped
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        progressLayer.strokeEnd = max(0, min(progress, 1))
+        CATransaction.commit()
     }
 
     private func applyTrackStyle() {
