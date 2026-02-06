@@ -20,8 +20,8 @@ class StrainRootView: CleanView {
             button.backgroundColor = .white.withAlphaComponent(0.1)
             button.layer.cornerRadius = 22
         }
-        button.setTitle("Strain", for: .normal)
-        button.setImage(UIImage(named: "strain_ic"), for: .normal)
+        button.setTitle("Восстановление", for: .normal)
+        button.setImage(UIImage(named: "Strain_ic"), for: .normal)
         button.configuration?.imagePadding = 10
     }
     private let closeButton = UIButton().configured { button in
