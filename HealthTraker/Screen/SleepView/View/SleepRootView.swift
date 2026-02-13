@@ -21,7 +21,7 @@ class SleepRootView: CleanView {
             button.backgroundColor = .white.withAlphaComponent(0.1)
             button.layer.cornerRadius = 22
         }
-        button.setTitle("Восстановление", for: .normal)
+        button.setTitle("Сон", for: .normal)
         button.setImage(UIImage(named: "sleep_ic"), for: .normal)
         button.configuration?.imagePadding = 10
     }
@@ -81,7 +81,6 @@ class SleepRootView: CleanView {
             sleepTitleButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
             sleepTitleButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             sleepTitleButton.heightAnchor.constraint(equalToConstant: 44),
-            sleepTitleButton.widthAnchor.constraint(equalToConstant: 200),
         ])
     }
     

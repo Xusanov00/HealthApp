@@ -20,14 +20,12 @@ class CalendarView: CleanView {
         }
     }
     
-    /// Выбранная дата (управляется извне)
     var selectedDate: Date? {
         didSet {
             updateSelection()
         }
     }
     
-    /// Флаг для одноразового скролла
     private var hasScrolledToEnd = false
     
     weak var delegate: CalendarViewDelegate?

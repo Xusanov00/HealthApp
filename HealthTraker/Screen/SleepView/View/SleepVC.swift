@@ -14,7 +14,7 @@ class SleepVC: UIViewController, RootViewProviding {
     private lazy var dataProvider = SleepDataProvider(
         tableView: rootView.tableView
     )
-
+    
     private let viewModel = SleepViewModel()
     
     override func loadView() {
@@ -33,13 +33,11 @@ extension SleepVC {
         dataProvider.delegate = self
         dataProvider.calendarSleepData = viewModel.calendarRecoveryData
         dataProvider.sleepData = viewModel.sleepData
-        dataProvider.pulseData = viewModel.pulseData
-        dataProvider.vsrData = viewModel.vsrData
-        dataProvider.breathData = viewModel.breathData
-        dataProvider.sleepData = viewModel.sleepData
-        dataProvider.sleepSelectedData = viewModel.recoverySelectedData
+        dataProvider.sleepStageModel = viewModel.sleepStageModel
         dataProvider.selectedRange = viewModel.selectedRange
+        
         dataProvider.selectedDate = viewModel.selectedDate
+        dataProvider.sleepSelectedData = viewModel.recoverySelectedData
     }
 }
 
@@ -54,10 +52,7 @@ extension SleepVC: SleepDataProviderDelegate {
     func rangeChanged(range: ChartRange) {
         viewModel.rangeChanged(range: range)
         dataProvider.sleepData = viewModel.sleepData
-        dataProvider.pulseData = viewModel.pulseData
-        dataProvider.vsrData = viewModel.vsrData
-        dataProvider.breathData = viewModel.breathData
-        dataProvider.sleepData = viewModel.sleepData
+        dataProvider.sleepStageModel = viewModel.sleepStageModel
         dataProvider.selectedRange = viewModel.selectedRange
     }
 }
@@ -66,5 +61,12 @@ extension SleepVC: SleepDataProviderDelegate {
 extension SleepVC: SleepRootViewDelegate {
     func dismissTapped() {
         self.dismiss(animated: true)
+    }
+}
+
+extension SleepVC: SleepStageChartTableViewCellDelegate {
+    func sleepStageInfoTapped() {
+        let vc = SleepStagesInfoController()
+        self.present(vc, animated: true)
     }
 }

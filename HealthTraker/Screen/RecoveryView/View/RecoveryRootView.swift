@@ -81,7 +81,6 @@ class RecoveryRootView: CleanView {
             recoveryTitleButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
             recoveryTitleButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             recoveryTitleButton.heightAnchor.constraint(equalToConstant: 44),
-            recoveryTitleButton.widthAnchor.constraint(equalToConstant: 200),
         ])
     }
     

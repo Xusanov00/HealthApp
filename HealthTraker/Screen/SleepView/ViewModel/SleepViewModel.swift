@@ -13,9 +13,12 @@ class SleepViewModel {
     
     private let mockData = RecoveryMockData.shared
     private var graphData: RecoveryDataDM
+    private let sleepMockData = SleepMockData.shared
+    private var sleepGraphData: SleepDataDM
     
     init() {
         graphData = mockData.data
+        sleepGraphData = sleepMockData.data
     }
     
     // MARK: - Public Data
@@ -47,6 +50,10 @@ class SleepViewModel {
     var sleepData: [HealthInfoDM] {
         mapGraphData(keyPath: \.sleepPerformancePercentage)
     }
+
+    var sleepStageModel: SleepStageChartCardModel {
+        SleepStageChartCardModel(days: sleepGraphDataForRange(), range: selectedRange)
+    }
     
     // MARK: - Actions
     
@@ -65,6 +72,14 @@ class SleepViewModel {
         case .day:   return graphData.graph.daily
         case .week:  return graphData.graph.weekly
         case .month: return graphData.graph.monthly
+        }
+    }
+
+    private func sleepGraphDataForRange() -> [SleepDayDM] {
+        switch selectedRange {
+        case .day:   return sleepGraphData.graph.daily
+        case .week:  return sleepGraphData.graph.weekly
+        case .month: return sleepGraphData.graph.monthly
         }
     }
     

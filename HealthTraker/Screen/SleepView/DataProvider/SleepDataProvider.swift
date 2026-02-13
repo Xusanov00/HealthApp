@@ -11,6 +11,7 @@ import UIKit
 protocol SleepDataProviderDelegate: AnyObject {
     func dateChanged(date: Date)
     func rangeChanged(range: ChartRange)
+    func sleepStageInfoTapped()
 }
 
 final class SleepDataProvider: NSObject, UITableViewDataSource, UITableViewDelegate {
@@ -37,19 +38,9 @@ final class SleepDataProvider: NSObject, UITableViewDataSource, UITableViewDeleg
     private var isInitialLoad = true
     var calendarSleepData: [HealthInfoDM] = []
     var sleepData: [HealthInfoDM] = []
-    var vsrData: [HealthInfoDM] = [] {
+    var sleepStageModel: SleepStageChartCardModel? {
         didSet {
             tableView.reloadRows(at: [.init(row: 1, section: 1)], with: .none)
-        }
-    }
-    var pulseData: [HealthInfoDM] = [] {
-        didSet {
-            tableView.reloadRows(at: [.init(row: 2, section: 1)], with: .none)
-        }
-    }
-    var breathData: [HealthInfoDM] = [] {
-        didSet {
-            tableView.reloadRows(at: [.init(row: 3, section: 1)], with: .none)
         }
     }
     
@@ -65,9 +56,9 @@ final class SleepDataProvider: NSObject, UITableViewDataSource, UITableViewDeleg
         tableView.allowsSelection = false
         tableView.separatorStyle = .none
         tableView.register(SleepCalendarTableViewCell.self, forCellReuseIdentifier: SleepCalendarTableViewCell.string)
-        tableView.register(SleepTimeChartTableViewCell.self, forCellReuseIdentifier: SleepTimeChartTableViewCell.string)
-        tableView.register(SleepMultiChartTableViewCell.self, forCellReuseIdentifier: SleepMultiChartTableViewCell.string)
-        tableView.register(BarChartTableViewCell.self, forCellReuseIdentifier: BarChartTableViewCell.string)
+        tableView.register(SleepBarChartTableViewCell.self, forCellReuseIdentifier: SleepBarChartTableViewCell.string)
+        tableView.register(SleepStageChartTableViewCell.self, forCellReuseIdentifier: SleepStageChartTableViewCell.string)
+        tableView.register(SleepAdviceTableViewCell.self, forCellReuseIdentifier: SleepAdviceTableViewCell.string)
     }
 }
 
@@ -75,7 +66,7 @@ extension SleepDataProvider {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 5
+        case 1: return 3
         default: return 0
         }
     }
@@ -87,7 +78,7 @@ extension SleepDataProvider {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch (indexPath.section, indexPath.row) {
             // MARK: - Calendar
-        case (0, 0):
+        case (0,0):
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: SleepCalendarTableViewCell.string,
                 for: indexPath
@@ -109,61 +100,31 @@ extension SleepDataProvider {
             // MARK: - Sleep Barchart
         case (1,0):
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: SleepMultiChartTableViewCell.string,
+                withIdentifier: SleepBarChartTableViewCell.string,
                 for: indexPath
-            ) as? SleepMultiChartTableViewCell else { return UITableViewCell() }
+            ) as? SleepBarChartTableViewCell else { return UITableViewCell() }
             cell.delegate = self
             cell.configureChart(range: selectedRange, yValues: [0,34,67,70,100], data: sleepData)
-            cell.configureMetrics([
-                .init(
-                    data: vsrData,
-                    icon: "vsr_ic",
-                    subtitle: "вариабельность сердечного ритма",
-                ),
-                .init(
-                    data: pulseData,
-                    icon: "pulse_ic",
-                    subtitle: "пульс в покое",
-                ),
-                .init(
-                    data: breathData,
-                    icon: "lungs_ic",
-                    subtitle: "вдохов в минуту",
-                ),
-                .init(
-                    data: sleepData,
-                    icon: "moon_ic",
-                    subtitle: "результативность сна",
-                    inPercent: true,
-                ),
-            ])
             return cell
             
-            // MARK: - VSR Linechart
+            // MARK: - SleepStage Сhart
         case (1,1):
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: SleepTimeChartTableViewCell.string,
+                withIdentifier: SleepStageChartTableViewCell.string,
                 for: indexPath
-            ) as? SleepTimeChartTableViewCell else { return UITableViewCell() }
-            cell.configureCell(icon: "vsr_ic", title: "ВСР", yValues: [20,30,40,50,60], data: vsrData)
+            ) as? SleepStageChartTableViewCell else { return UITableViewCell() }
+            if let model = sleepStageModel {
+                cell.configure(model)
+                cell.delegate = self
+            }
             return cell
             
-            // MARK: - Pulse Linechart
+            // MARK: - Sleep time Dynamic chart
         case (1,2):
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: BarChartTableViewCell.string,
+                withIdentifier: SleepAdviceTableViewCell.string,
                 for: indexPath
-            ) as? BarChartTableViewCell else { return UITableViewCell() }
-            cell.configureCell(icon: "pulse_ic", title: "Пульс в покое", yValues: [40,50,60,70,80], data: pulseData)
-            return cell
-            
-            // MARK: - Sleep Barchart
-        case (1,3):
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: BarChartTableViewCell.string,
-                for: indexPath
-            ) as? BarChartTableViewCell else { return UITableViewCell() }
-            cell.configureCell(icon: "moon_ic", title: "Сон", yValues: [0,20,40,60,80,100], data: sleepData)
+            ) as? SleepAdviceTableViewCell else { return UITableViewCell() }
             return cell
         default:
             return UITableViewCell()
@@ -214,8 +175,14 @@ extension SleepDataProvider: SleepCalendarTableViewCellDelegate {
     }
 }
 
-extension SleepDataProvider: SleepMultiChartTableViewCellDelegate {
+extension SleepDataProvider: SleepBarChartTableViewCellDelegate {
     func rangeChanged(range: ChartRange) {
         delegate?.rangeChanged(range: range)
+    }
+}
+
+extension SleepDataProvider: SleepStageChartTableViewCellDelegate {
+    func sleepStageInfoTapped() {
+        delegate?.sleepStageInfoTapped()
     }
 }

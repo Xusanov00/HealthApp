@@ -1,5 +1,5 @@
 //
-//  SleepMultiChartTableViewCell.swift
+//  RecoveryChartTableViewCell.swift
 //  HealthTraker
 //
 //  Created by Ali on 21/12/2025.
@@ -8,27 +8,27 @@
 import UIKit
 import SwiftUI
 
-protocol SleepMultiChartTableViewCellDelegate {
+protocol SleepBarChartTableViewCellDelegate {
     func rangeChanged(range: ChartRange)
 }
 
-final class SleepMultiChartTableViewCell: UITableViewCell {
+final class SleepBarChartTableViewCell: UITableViewCell {
     private let chartViewModel = BarChartViewModel()
 
     // MARK: - UI
-	private let backView = UIView().configured { view in
+    private let backView = UIView().configured { view in
         view.backgroundColor = .white.withAlphaComponent(0.1)
-		view.layer.cornerRadius = 22
-		view.clipsToBounds = true
-	}
+        view.layer.cornerRadius = 22
+        view.clipsToBounds = true
+    }
     private let titleLabel = UILabel().configured {
         $0.text = "Динамика"
         $0.font = .montserrat(ofSize: 20, weight: .bold)
         $0.textColor = .white
     }
-	private lazy var hostingBarChart = UIHostingController(
-		rootView: BarChartComponent(viewModel: chartViewModel)
-	)
+    private lazy var hostingBarChart = UIHostingController(
+        rootView: BarChartComponent(viewModel: chartViewModel)
+    )
 
     private let dayButton = UIButton(type: .system)
     private let weekButton = UIButton(type: .system)
@@ -44,32 +44,20 @@ final class SleepMultiChartTableViewCell: UITableViewCell {
         $0.layer.cornerRadius = 20
     }
 
-    // MARK: - Bottom metrics
-    private let metricsStack = UIStackView().configured {
-        $0.axis = .vertical
-        $0.spacing = 12
-        $0.distribution = .equalSpacing
-        $0.alignment = .fill
-    }
-
-    private let hrvView = SleepMetricView()
-    private let pulseView = SleepMetricView()
-    private let breathView = SleepMetricView()
-    private let sleepView = SleepMetricView()
 
     // MARK: - State day/week/month
     private var selectedRange: ChartRange? {
         didSet { updateButtonsUI() }
     }
     
-    var delegate: SleepMultiChartTableViewCellDelegate?
+    var delegate: SleepBarChartTableViewCellDelegate?
 
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .black
         selectionStyle = .none
-		
+        
         setupUI()
         setupActions()
         updateButtonsUI()
@@ -82,54 +70,43 @@ final class SleepMultiChartTableViewCell: UITableViewCell {
     // MARK: - Setup UI
     private func setupUI() {
         hostingBarChart.view.backgroundColor = .clear
-		hostingBarChart.view.clipsToBounds = true
-		
-		backView.translatesAutoresizingMaskIntoConstraints = false
-		
-		contentView.addSubview(backView)
+        hostingBarChart.view.clipsToBounds = true
+        
+        backView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(backView)
 
-		backView.addSubview(titleLabel)
-		backView.addSubview(buttonsStack)
-		backView.addSubview(hostingBarChart.view)
-		backView.addSubview(metricsStack)
-
-        metricsStack.addArrangedSubview(hrvView)
-        metricsStack.addArrangedSubview(pulseView)
-        metricsStack.addArrangedSubview(breathView)
-        metricsStack.addArrangedSubview(sleepView)
+        backView.addSubview(titleLabel)
+        backView.addSubview(buttonsStack)
+        backView.addSubview(hostingBarChart.view)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
-		hostingBarChart.view.translatesAutoresizingMaskIntoConstraints = false
-        metricsStack.translatesAutoresizingMaskIntoConstraints = false
+        hostingBarChart.view.translatesAutoresizingMaskIntoConstraints = false
 
-		configureButton(dayButton, title: "День")
-		configureButton(weekButton, title: "Неделя")
-		configureButton(monthButton, title: "Месяц")
+        configureButton(dayButton, title: "День")
+        configureButton(weekButton, title: "Неделя")
+        configureButton(monthButton, title: "Месяц")
 
         NSLayoutConstraint.activate([
-			backView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-			backView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-			backView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-			backView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
-			
+            backView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            backView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            backView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            backView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            
             titleLabel.topAnchor.constraint(equalTo: backView.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 16),
 
-			buttonsStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            buttonsStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
             buttonsStack.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 8),
             buttonsStack.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -8),
             buttonsStack.heightAnchor.constraint(equalToConstant: 40),
 
-			hostingBarChart.view.topAnchor.constraint(equalTo: buttonsStack.bottomAnchor, constant: 22),
+            hostingBarChart.view.topAnchor.constraint(equalTo: buttonsStack.bottomAnchor, constant: 22),
             hostingBarChart.view.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
             hostingBarChart.view.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
             hostingBarChart.view.heightAnchor.constraint(equalToConstant: 200),
-
-			metricsStack.topAnchor.constraint(equalTo: hostingBarChart.view.bottomAnchor, constant: 16),
-            metricsStack.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 16),
-            metricsStack.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -16),
-            metricsStack.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -16)
+            hostingBarChart.view.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -4),
         ])
     }
 
@@ -160,7 +137,7 @@ final class SleepMultiChartTableViewCell: UITableViewCell {
     private func updateButtonsUI() {
         [dayButton, weekButton, monthButton].forEach {
             $0.backgroundColor = .clear
-			$0.layer.cornerRadius = 20
+            $0.layer.cornerRadius = 20
         }
 
         switch selectedRange {
@@ -179,12 +156,5 @@ final class SleepMultiChartTableViewCell: UITableViewCell {
         chartViewModel.barType = .colorful
         chartViewModel.markedValue = 75
         chartViewModel.isPercentage = true
-    }
-
-    func configureMetrics(_ metrics: [SleepMetric]) {
-        hrvView.configureView(metrics[0])
-        pulseView.configureView(metrics[1])
-        breathView.configureView(metrics[2])
-        sleepView.configureView(metrics[3])
     }
 }
